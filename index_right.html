@@ -1,0 +1,959 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scan Tire AI — План Разработки</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22 font-family=%22monospace%22>S</text></svg>">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            /* Светлая тема (по умолчанию) */
+            --primary: #00aa2b;
+            --primary-dim: rgba(0, 170, 43, 0.1);
+            --primary-glow: rgba(0, 170, 43, 0.2);
+            --bg-main: #f4f5f7;
+            --bg-card: #ffffff;
+            --bg-code: #0d1117; /* Код всегда на черном фоне */
+            --text-main: #111827;
+            --text-gray: #4b5563;
+            --text-dim: #6b7280;
+            --text-code: #e5e7eb; /* Светлый текст для кода */
+            --border: #e5e7eb;
+            --border-hover: #d1d5db;
+            --success: #059669;
+            --warning: #d97706;
+            --danger: #dc2626;
+            --info: #0284c7;
+        }
+
+        body.dark-theme {
+            /* Темная тема */
+            --primary: #00ff41;
+            --primary-dim: rgba(0, 255, 65, 0.1);
+            --primary-glow: rgba(0, 255, 65, 0.3);
+            --bg-main: #0a0a0a;
+            --bg-card: #111111;
+            --bg-code: #0d1117;
+            --text-main: #ffffff;
+            --text-gray: #a1a1aa;
+            --text-dim: #71717a;
+            --text-code: #e5e7eb;
+            --border: #27272a;
+            --border-hover: #3f3f46;
+            --success: #00ff41;
+            --warning: #ffaa00;
+            --danger: #ff4444;
+            --info: #00aaff;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: var(--bg-main);
+            color: var(--text-main);
+            line-height: 1.6;
+            min-height: 100vh;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Сайдбар */
+        .sidebar {
+            width: 280px;
+            background: var(--bg-card);
+            border-right: 1px solid var(--border);
+            padding: 24px;
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+            transition: background-color 0.3s, border-color 0.3s;
+        }
+
+        .sidebar-logo {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .sidebar-subtitle {
+            color: var(--text-dim);
+            font-size: 0.8rem;
+            margin-bottom: 16px;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        /* Переключатель темы */
+        .theme-toggle {
+            width: 100%;
+            background: var(--bg-main);
+            border: 1px solid var(--border);
+            color: var(--text-main);
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            margin-bottom: 24px;
+            transition: all 0.2s;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .theme-toggle:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        .nav-section {
+            margin-bottom: 20px;
+        }
+
+        .nav-section-title {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--text-dim);
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: var(--text-gray);
+            text-decoration: none;
+            font-size: 0.9rem;
+            border-radius: 6px;
+            transition: all 0.2s;
+            margin-bottom: 4px;
+            font-weight: 500;
+        }
+
+        .nav-link::before {
+            content: "[ ]";
+            font-family: 'JetBrains Mono', monospace;
+            margin-right: 8px;
+            font-size: 0.8rem;
+            color: var(--text-dim);
+        }
+
+        .nav-link.active::before {
+            content: "[x]";
+            color: var(--primary);
+        }
+
+        .nav-link:hover {
+            background: var(--primary-dim);
+            color: var(--primary);
+        }
+
+        .nav-link.active {
+            background: var(--primary-dim);
+            color: var(--primary);
+            border-left: 3px solid var(--primary);
+        }
+
+        .status {
+            margin-left: auto;
+            font-size: 0.65rem;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-weight: 700;
+        }
+
+        .status-progress { background: rgba(217, 119, 6, 0.15); color: var(--warning); border: 1px solid var(--warning); }
+        .status-pending { background: rgba(107, 114, 128, 0.1); color: var(--text-dim); border: 1px solid var(--border); }
+        .status-done { background: rgba(5, 150, 105, 0.15); color: var(--success); border: 1px solid var(--success); }
+
+        /* Основной контент */
+        .main {
+            margin-left: 280px;
+            flex: 1;
+            padding: 40px 60px;
+            max-width: 1000px;
+        }
+
+        .page-header {
+            margin-bottom: 40px;
+            padding-bottom: 24px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .page-title {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 12px;
+            letter-spacing: -0.02em;
+        }
+
+        .page-description {
+            color: var(--text-gray);
+            font-size: 1.1rem;
+            max-width: 800px;
+        }
+
+        /* Карточки прогресса */
+        .progress-overview {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+            margin-bottom: 40px;
+        }
+
+        .progress-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            transition: all 0.2s;
+        }
+
+        body.dark-theme .progress-card {
+            box-shadow: none;
+        }
+
+        .progress-card:hover {
+            border-color: var(--primary);
+            transform: translateY(-2px);
+        }
+
+        .progress-value {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 4px;
+        }
+
+        .progress-label {
+            color: var(--text-gray);
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        /* Секции */
+        section {
+            margin-bottom: 60px;
+            scroll-margin-top: 40px;
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 24px;
+            border-bottom: 2px solid var(--border);
+            padding-bottom: 10px;
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        /* Список задач */
+        .task-list {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+
+        body.dark-theme .task-list { box-shadow: none; }
+
+        .task-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 14px;
+            padding: 16px 20px;
+            border-bottom: 1px solid var(--border);
+            transition: background 0.2s;
+        }
+
+        .task-item:last-child { border-bottom: none; }
+        .task-item:hover { background: var(--bg-main); }
+
+        .task-checkbox {
+            width: 22px;
+            height: 22px;
+            border: 2px solid var(--border-hover);
+            border-radius: 4px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            margin-top: 2px;
+            transition: all 0.2s;
+            background: var(--bg-card);
+        }
+
+        .task-checkbox:hover { border-color: var(--primary); }
+
+        .task-checkbox.checked {
+            background: var(--primary);
+            border-color: var(--primary);
+        }
+
+        .task-checkbox.checked::after {
+            content: "";
+            width: 5px;
+            height: 10px;
+            border: solid white;
+            border-width: 0 2px 2px 0;
+            transform: rotate(45deg);
+            margin-bottom: 2px;
+        }
+
+        body.dark-theme .task-checkbox.checked::after {
+            border-color: var(--bg-dark);
+        }
+
+        .task-content { flex: 1; }
+
+        .task-title {
+            font-weight: 600;
+            margin-bottom: 4px;
+            color: var(--text-main);
+        }
+
+        .task-item.completed .task-title {
+            color: var(--text-dim);
+            text-decoration: line-through;
+        }
+
+        .task-description {
+            color: var(--text-gray);
+            font-size: 0.9rem;
+        }
+
+        .task-meta {
+            display: flex;
+            gap: 8px;
+            margin-top: 8px;
+        }
+
+        .task-tag {
+            font-size: 0.7rem;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .tag-dev { background: rgba(2, 132, 199, 0.1); color: var(--info); }
+        .tag-ml { background: rgba(5, 150, 105, 0.1); color: var(--success); }
+        .tag-biz { background: rgba(217, 119, 6, 0.1); color: var(--warning); }
+        .tag-legal { background: rgba(220, 38, 38, 0.1); color: var(--danger); }
+
+        /* Блоки кода (всегда темные) */
+        .code-block {
+            background: #0d1117; /* Фиксированный темный фон */
+            border: 1px solid #30363d;
+            border-radius: 8px;
+            margin: 16px 0;
+            overflow: hidden;
+        }
+
+        .code-header {
+            display: flex;
+            align-items: center;
+            padding: 8px 16px;
+            background: #161b22;
+            border-bottom: 1px solid #30363d;
+        }
+
+        .code-lang {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
+            color: #8b949e;
+        }
+
+        .code-copy {
+            margin-left: auto;
+            background: #21262d;
+            border: 1px solid #363b42;
+            color: #c9d1d9;
+            cursor: pointer;
+            font-size: 0.75rem;
+            padding: 4px 10px;
+            border-radius: 6px;
+            transition: all 0.2s;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .code-copy:hover {
+            background: #30363d;
+            border-color: #8b949e;
+        }
+
+        .code-content {
+            padding: 16px;
+            overflow-x: auto;
+        }
+
+        pre {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            line-height: 1.5;
+            color: #e5e7eb; /* Фиксированный светлый текст */
+            margin: 0;
+        }
+
+        /* Инфо-блоки */
+        .info-box {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-left: 4px solid var(--primary);
+            border-radius: 6px;
+            padding: 16px 20px;
+            margin: 20px 0;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+        }
+
+        body.dark-theme .info-box { box-shadow: none; }
+
+        .info-box.warning { border-left-color: var(--warning); }
+        .info-box.danger { border-left-color: var(--danger); }
+
+        .info-box-title {
+            font-weight: 700;
+            margin-bottom: 8px;
+            color: var(--text-main);
+        }
+
+        .info-box-content {
+            color: var(--text-gray);
+            font-size: 0.95rem;
+        }
+
+        /* Таблицы KPI */
+        .kpi-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background: var(--bg-card);
+            border-radius: 8px;
+            overflow: hidden;
+            border: 1px solid var(--border);
+        }
+
+        .kpi-table th, .kpi-table td {
+            padding: 12px 16px;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .kpi-table th {
+            background: var(--bg-main);
+            font-weight: 600;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-dim);
+        }
+
+        .kpi-highlight {
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        /* Анимации */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        section { animation: fadeIn 0.4s ease; }
+
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <!-- Сайдбар -->
+    <nav class="sidebar">
+        <div class="sidebar-logo">
+            [ Scan Tire AI ]
+        </div>
+        <div class="sidebar-subtitle">Дорожная карта v1.0</div>
+
+        <button class="theme-toggle" id="themeToggle">
+            Включить темную тему
+        </button>
+
+        <div class="nav-section">
+            <div class="nav-section-title">Основное</div>
+            <a href="#overview" class="nav-link active">Обзор проекта</a>
+            <a href="#strategy" class="nav-link">Стратегия (Для меня)</a>
+            <a href="#tech-stack" class="nav-link">Стек технологий</a>
+        </div>
+
+        <div class="nav-section">
+            <div class="nav-section-title">Разработка</div>
+            <a href="#month-1-2" class="nav-link">Месяц 1-2: MVP <span class="status status-progress">В ПРОЦЕССЕ</span></a>
+            <a href="#month-3-4" class="nav-link">Месяц 3-4: Данные <span class="status status-pending">В ОЖИДАНИИ</span></a>
+            <a href="#month-5-6" class="nav-link">Месяц 5-6: Бета <span class="status status-pending">В ОЖИДАНИИ</span></a>
+            <a href="#month-13-18" class="nav-link">Фаза 2: OCR <span class="status status-pending">БУДУЩЕЕ</span></a>
+        </div>
+
+        <div class="nav-section">
+            <div class="nav-section-title">Бизнес и Рост</div>
+            <a href="#month-7-12" class="nav-link">Месяц 7-12: Монетизация</a>
+            <a href="#marketing" class="nav-link">Маркетинг и Видео</a>
+            <a href="#legal" class="nav-link">Юридическая часть</a>
+        </div>
+    </nav>
+
+    <!-- Основной контент -->
+    <main class="main">
+        <header class="page-header">
+            <img src="logo.svg" alt="Scan Tire AI" width="100" height="100">
+            <h1 class="page-title">План развития Scan Tire AI</h1>
+            <p class="page-description">
+                Автоматическая проверка износа шин с помощью компьютерного зрения.
+                Целевой рынок: B2B сегмент (ОАЭ, Турция, Казахстан).
+                Задача: Выйти на $3000+ MRR за 18 месяцев силами одного разработчика.
+            </p>
+        </header>
+
+        <!-- Метрики -->
+        <div class="progress-overview">
+            <div class="progress-card">
+                <div class="progress-value">60%</div>
+                <div class="progress-label">Точность ИИ</div>
+            </div>
+            <div class="progress-card">
+                <div class="progress-value">0</div>
+                <div class="progress-label">Бета-юзеров</div>
+            </div>
+            <div class="progress-card">
+                <div class="progress-value">$0</div>
+                <div class="progress-label">MRR (Доход)</div>
+            </div>
+            <div class="progress-card">
+                <div class="progress-value">Месяц 1</div>
+                <div class="progress-label">Текущий этап</div>
+            </div>
+        </div>
+
+        <!-- СЕКЦИЯ: СТРАТЕГИЯ РАЗВИТИЯ -->
+        <section id="strategy">
+            <div class="section-header">
+                <h2 class="section-title">Стратегия продукта (Только для меня)</h2>
+            </div>
+
+            <div class="info-box danger">
+                <div class="info-box-title">Главное правило: LEAN (Бережливый стартап)</div>
+                <div class="info-box-content">
+                    Я работаю один. Не пытаюсь сделать идеальный продукт. Делаю минимально рабочую версию (MVP), выкидываю в сеть, собираю фидбек. Никаких сложных архитектур в начале. Если фича не помогает продавать или не улучшает распознавание износа — она не нужна в первые полгода.
+                </div>
+            </div>
+
+            <div class="task-list">
+                <div class="task-item">
+                    <div class="task-checkbox" onclick="this.classList.toggle('checked')"></div>
+                    <div class="task-content">
+                        <div class="task-title">Фокус строго на ИЗНОСЕ (Wear)</div>
+                        <div class="task-description">Распознавание текста (OCR) откладываем до Фазы 2. Клиенту важнее узнать "пора ли менять шину", чем размер. Одно фото протектора -> Один понятный ответ (Новая/Норм/Износ/Критично).</div>
+                    </div>
+                </div>
+                <div class="task-item">
+                    <div class="task-checkbox" onclick="this.classList.toggle('checked')"></div>
+                    <div class="task-content">
+                        <div class="task-title">Локальная разметка данных (PyQt6 + C++)</div>
+                        <div class="task-description">Вся тяжелая работа с подготовкой датасетов идет ТОЛЬКО на моем компе. Сервер не должен заниматься предобработкой видео или массовой нарезкой.</div>
+                    </div>
+                </div>
+                <div class="task-item">
+                    <div class="task-checkbox" onclick="this.classList.toggle('checked')"></div>
+                    <div class="task-content">
+                        <div class="task-title">Инференс через ONNX в Next.js</div>
+                        <div class="task-description">Дешевый хостинг. Никаких дорогих GPU-серверов на старте. Node.js + onnxruntime на обычном Vercel/VPS потянет первые сотни запросов.</div>
+                    </div>
+                </div>
+                <div class="task-item">
+                    <div class="task-checkbox" onclick="this.classList.toggle('checked')"></div>
+                    <div class="task-content">
+                        <div class="task-title">Гибридная модель продаж</div>
+                        <div class="task-description">Физ. лицам - бесплатно (с рекламой или лимитом). Для автопарков и шиномонтажей (B2B) - API или Pro-аккаунт за подписку. Основные деньги в B2B.</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- СЕКЦИЯ: ТЕХ СТЕК -->
+        <section id="tech-stack">
+            <div class="section-header">
+                <h2 class="section-title">Технологический стек</h2>
+            </div>
+
+            <div class="info-box warning">
+                <div class="info-box-title">Внимание: НИКАКОГО OpenCV в Продакшене</div>
+                <div class="info-box-content">
+                    Вся предобработка на бэкенде делается через легковесный Sharp.js (нативный для Node.js). C++ движок используется ТОЛЬКО для локальной тулзы разметки.
+                </div>
+            </div>
+
+            <table class="kpi-table">
+                <thead>
+                    <tr>
+                        <th>Компонент</th>
+                        <th>Технология</th>
+                        <th>Назначение</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Фронтенд</td>
+                        <td class="kpi-highlight">Next.js 15 (App Router)</td>
+                        <td>Интерфейс, загрузка фото, PWA</td>
+                    </tr>
+                    <tr>
+                        <td>Бэкенд API</td>
+                        <td class="kpi-highlight">Next.js API Routes</td>
+                        <td>Эндпоинт POST /api/analyze</td>
+                    </tr>
+                    <tr>
+                        <td>ИИ Инференс</td>
+                        <td class="kpi-highlight">ONNX Runtime Node.js</td>
+                        <td>Запуск нейросети на сервере</td>
+                    </tr>
+                    <tr>
+                        <td>Обработка фото</td>
+                        <td class="kpi-highlight">Sharp.js</td>
+                        <td>Ресайз, нормализация тензоров</td>
+                    </tr>
+                    <tr>
+                        <td>Обучение</td>
+                        <td class="kpi-highlight">PyTorch + ResNet18</td>
+                        <td>Дообучение на моем датасете шин</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- СЕКЦИЯ: 1-2 МЕСЯЦ -->
+        <section id="month-1-2">
+            <div class="section-header">
+                <h2 class="section-title">Месяц 1-2: Создание MVP</h2>
+                <span class="status status-progress">В ПРОЦЕССЕ</span>
+            </div>
+
+            <div class="info-box">
+                <div class="info-box-title">Цель: Запустить рабочий сайт scantire.com/beta</div>
+                <div class="info-box-content">
+                    Пользователь грузит фото -> получает статус износа. Нужно получить первые 10 живых тестов.
+                </div>
+            </div>
+
+            <div class="task-list">
+                <div class="task-item completed">
+                    <div class="task-checkbox checked" onclick="this.classList.toggle('checked')"></div>
+                    <div class="task-content">
+                        <div class="task-title">Регистрация домена и лендинг</div>
+                        <div class="task-description">Домен scantire.com, сбор email-ов в лист ожидания.</div>
+                        <div class="task-meta"><span class="task-tag tag-dev">dev</span></div>
+                    </div>
+                </div>
+                <div class="task-item">
+                    <div class="task-checkbox" onclick="this.classList.toggle('checked')"></div>
+                    <div class="task-content">
+                        <div class="task-title">Экспорт ResNet18 в ONNX</div>
+                        <div class="task-description">Конвертация обученной модели (PyTorch) в формат .onnx для сервера.</div>
+                        <div class="task-meta"><span class="task-tag tag-ml">ml</span></div>
+                    </div>
+                </div>
+                <div class="task-item">
+                    <div class="task-checkbox" onclick="this.classList.toggle('checked')"></div>
+                    <div class="task-content">
+                        <div class="task-title">Написание API на Next.js</div>
+                        <div class="task-description">Интеграция onnxruntime-node и Sharp.js для обработки фото.</div>
+                        <div class="task-meta"><span class="task-tag tag-dev">backend</span></div>
+                    </div>
+                </div>
+                <div class="task-item">
+                    <div class="task-checkbox" onclick="this.classList.toggle('checked')"></div>
+                    <div class="task-content">
+                        <div class="task-title">Развертывание на Vercel/VPS</div>
+                        <div class="task-description">Деплой проекта, настройка SSL, загрузка модели в /public/models/.</div>
+                        <div class="task-meta"><span class="task-tag tag-dev">devops</span></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Код -->
+            <h3 style="margin: 30px 0 16px; font-size: 1.1rem;">Пример кода: Экспорт модели в ONNX</h3>
+            <div class="code-block">
+                <div class="code-header">
+                    <span class="code-lang">python (export.py)</span>
+                    <button class="code-copy" onclick="copyCode(this)">Копировать</button>
+                </div>
+                <div class="code-content">
+<pre>import torch
+import torch.nn as nn
+from torchvision import models
+
+# Загрузка весов
+model = models.resnet18(weights=None)
+model.fc = nn.Linear(model.fc.in_features, 5) # 5 классов износа
+model.load_state_dict(torch.load('weights/model_wear_best.pth'))
+model.eval()
+
+# Экспорт в ONNX
+dummy_input = torch.randn(1, 3, 224, 224)
+torch.onnx.export(
+    model, dummy_input, 'wear_resnet18.onnx',
+    opset_version=17,
+    input_names=['input'], output_names=['output']
+)</pre>
+                </div>
+            </div>
+        </section>
+
+        <!-- СЕКЦИЯ: МАРКЕТИНГ И ВИДЕО -->
+        <section id="marketing">
+            <div class="section-header">
+                <h2 class="section-title">Стратегия маркетинга и контента (Видео)</h2>
+            </div>
+
+            <div class="info-box">
+                <div class="info-box-title">Концепция "Build in Public" + Виральный контент</div>
+                <div class="info-box-content">
+                    Поскольку бюджета на рекламу нет, главный драйвер — органический трафик через короткие видео (YouTube Shorts, TikTok, Instagram Reels) и тематические форумы.
+                </div>
+            </div>
+
+            <h3 style="margin: 24px 0 16px; font-size: 1.1rem;">Идеи для видео (Сценарии Shorts/Reels)</h3>
+            <div class="task-list">
+                <div class="task-item">
+                    <div class="task-checkbox" onclick="this.classList.toggle('checked')"></div>
+                    <div class="task-content">
+                        <div class="task-title">Формат 1: "Шокирующая правда на шиномонтаже"</div>
+                        <div class="task-description">Снимаешь убитую покрышку (которую клиент считает норм). Наводишь телефон -> ИИ выдает красный алерт "Критический износ, риск ДТП". Текст на экране: "Доверяй ИИ, а не глазомеру".</div>
+                    </div>
+                </div>
+                <div class="task-item">
+                    <div class="task-checkbox" onclick="this.classList.toggle('checked')"></div>
+                    <div class="task-content">
+                        <div class="task-title">Формат 2: "ИИ против Механика"</div>
+                        <div class="task-description">Механик замеряет остаток протектора прибором (показывает 3мм). Следом ты фоткаешь через прилу — ИИ тоже говорит "3мм, износ". Динамичный монтаж.</div>
+                    </div>
+                </div>
+                <div class="task-item">
+                    <div class="task-checkbox" onclick="this.classList.toggle('checked')"></div>
+                    <div class="task-content">
+                        <div class="task-title">Формат 3: "Дневник разработчика" (Для LinkedIn)</div>
+                        <div class="task-description">Видео с экрана компа. "Как я обучил нейросеть понимать износ шин". Показываешь интерфейс программы разметки (которую написал на PyQt6). Отлично работает на западную IT/Авто бизнес-аудиторию.</div>
+                    </div>
+                </div>
+            </div>
+
+            <h3 style="margin: 30px 0 16px; font-size: 1.1rem;">Каналы сбыта и Аудитория</h3>
+            <table class="kpi-table">
+                <thead>
+                    <tr>
+                        <th>Рынок</th>
+                        <th>Где искать</th>
+                        <th>Подход (Холодный метод)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="kpi-highlight">ОАЭ (Дубай)</td>
+                        <td>Google Maps, LinkedIn</td>
+                        <td>Писать владельцам Luxury Car Rentals и СТО. Предлагать бесплатный API-доступ на месяц для оценки парка машин.</td>
+                    </tr>
+                    <tr>
+                        <td class="kpi-highlight">Турция</td>
+                        <td>Sahibinden, WhatsApp</td>
+                        <td>Таргетинг на компании по аренде авто и перекупов. Оценка состояния резины б/у авто.</td>
+                    </tr>
+                    <tr>
+                        <td class="kpi-highlight">СНГ (РФ, КЗ)</td>
+                        <td>Drive2.ru, Пикабу</td>
+                        <td>Статьи: "Написал нейросеть, которая не дает шиномонтажникам вас обмануть". Вызывает много комментов и трафика.</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3 style="margin: 30px 0 16px; font-size: 1.1rem;">Шаблон холодного письма (Для ОАЭ)</h3>
+            <div class="code-block">
+                <div class="code-header">
+                    <span class="code-lang">Текст письма (Английский)</span>
+                    <button class="code-copy" onclick="copyCode(this)">Копировать</button>
+                </div>
+                <div class="code-content">
+<pre>Subject: Free AI tire inspector for [Shop Name]
+
+Hi [Name],
+I found your shop on Google Maps. 
+
+I built an AI tool that grades tire wear from photos in 5 seconds. 
+No special equipment — just a smartphone camera. Perfect for quick customer reports.
+
+Would you test it FREE for 2 weeks? Demo: https://scantire.com/beta
+Just snap photos of 3-5 tires, tell me if the grades match reality.
+
+Best,
+Slava Kuzkin
+Scan Tire AI Founder</pre>
+                </div>
+            </div>
+        </section>
+
+        <!-- СЕКЦИЯ: ЮРИДИЧЕСКАЯ ЧАСТЬ -->
+        <section id="legal">
+            <div class="section-header">
+                <h2 class="section-title">Юридическая безопасность</h2>
+            </div>
+
+            <div class="info-box danger">
+                <div class="info-box-title">ОТКАЗ ОТ ОТВЕТСТВЕННОСТИ (Обязательно!)</div>
+                <div class="info-box-content">
+                    Поскольку приложение связано с безопасностью на дороге, в футере сайта и перед первым использованием ОБЯЗАТЕЛЕН дисклеймер. Иначе засудят в случае ДТП.
+                </div>
+            </div>
+
+            <div class="code-block">
+                <div class="code-header">
+                    <span class="code-lang">Текст дисклеймера</span>
+                    <button class="code-copy" onclick="copyCode(this)">Копировать</button>
+                </div>
+                <div class="code-content">
+<pre>ВНИМАНИЕ: Scan Tire AI предоставляет исключительно ПРИБЛИЗИТЕЛЬНУЮ оценку на основе алгоритмов ИИ.
+Это НЕ заменяет профессиональный осмотр сертифицированным механиком.
+
+Используя сервис, вы соглашаетесь, что:
+1. Вы несете полную ответственность за принятие решений о безопасности авто.
+2. Создатель сервиса не несет ответственности за аварии, травмы или ущерб.
+3. Перед выездом всегда проверяйте шины лично или на СТО.</pre>
+                </div>
+            </div>
+        </section>
+
+        <!-- Подвал -->
+        <footer style="margin-top: 80px; padding-top: 40px; border-top: 1px solid var(--border); text-align: center; color: var(--text-dim);">
+            <p style="font-family: 'JetBrains Mono', monospace; font-size: 0.9rem;">
+                [ © 2026 Scan Tire AI — Создано Вячеславом Кузькиным ]
+            </p>
+            <p style="margin-top: 8px; font-size: 0.8rem;">
+                Solo-разработка · ИИ · Компьютерное зрение
+            </p>
+        </footer>
+    </main>
+</div>
+
+<script>
+    // Копирование кода
+    function copyCode(button) {
+        const codeBlock = button.closest('.code-block');
+        const code = codeBlock.querySelector('pre').innerText;
+        navigator.clipboard.writeText(code).then(() => {
+            button.textContent = 'Скопировано!';
+            setTimeout(() => button.textContent = 'Копировать', 2000);
+        });
+    }
+
+    // Плавный скролл
+    document.querySelectorAll('.nav-link').forEach(link => {
+        link.addEventListener('click', (e) => {
+            e.preventDefault();
+            const href = link.getAttribute('href');
+            const target = document.querySelector(href);
+            if (target) {
+                target.scrollIntoView({ behavior: 'smooth' });
+                document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+                link.classList.add('active');
+            }
+        });
+    });
+
+    // Подсветка активного раздела при скролле
+    window.addEventListener('scroll', () => {
+        const sections = document.querySelectorAll('section');
+        let current = '';
+        
+        sections.forEach(section => {
+            const sectionTop = section.offsetTop;
+            if (scrollY >= sectionTop - 120) {
+                current = section.getAttribute('id');
+            }
+        });
+        
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.classList.remove('active');
+            if (link.getAttribute('href') === '#' + current) {
+                link.classList.add('active');
+            }
+        });
+    });
+
+    // Сохранение состояния чекбоксов
+    document.querySelectorAll('.task-checkbox').forEach((checkbox, index) => {
+        const key = `task-${index}`;
+        if (localStorage.getItem(key) === 'checked') {
+            checkbox.classList.add('checked');
+            checkbox.closest('.task-item').classList.add('completed');
+        }
+        
+        checkbox.addEventListener('click', () => {
+            if (checkbox.classList.contains('checked')) {
+                localStorage.setItem(key, 'checked');
+                checkbox.closest('.task-item').classList.add('completed');
+            } else {
+                localStorage.removeItem(key);
+                checkbox.closest('.task-item').classList.remove('completed');
+            }
+        });
+    });
+
+    // --- ЛОГИКА ПЕРЕКЛЮЧЕНИЯ ТЕМ ---
+    const themeToggleBtn = document.getElementById('themeToggle');
+    const body = document.body;
+
+    // Проверяем сохраненную тему в localStorage
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme === 'dark') {
+        body.classList.add('dark-theme');
+        themeToggleBtn.textContent = 'Включить светлую тему';
+    }
+
+    // Обработчик клика
+    themeToggleBtn.addEventListener('click', () => {
+        body.classList.toggle('dark-theme');
+        
+        if (body.classList.contains('dark-theme')) {
+            localStorage.setItem('theme', 'dark');
+            themeToggleBtn.textContent = 'Включить светлую тему';
+        } else {
+            localStorage.setItem('theme', 'light');
+            themeToggleBtn.textContent = 'Включить темную тему';
+        }
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" fill="none">
+  <!-- Шина -->
+  <circle cx="50" cy="50" r="45" stroke="currentColor" stroke-width="4" fill="none"/>
+  
+  <!-- Протектор (3 линии) -->
+  <path d="M 50 15 L 50 28" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
+  <path d="M 50 72 L 50 85" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
+  <path d="M 22 28 L 30 36" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
+  <path d="M 70 64 L 78 72" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
+  <path d="M 22 72 L 30 64" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
+  <path d="M 70 36 L 78 28" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
+  
+  <!-- Сканирующая линия -->
+  <line x1="30" y1="50" x2="70" y2="50" stroke="currentColor" stroke-width="2"/>
+</svg>

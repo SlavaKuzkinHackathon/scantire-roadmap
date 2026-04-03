@@ -1,0 +1,1649 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scan Tire AI — Development Roadmap</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🔍</text></svg>">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #00ff41;
+            --primary-dim: rgba(0, 255, 65, 0.1);
+            --primary-glow: rgba(0, 255, 65, 0.3);
+            --bg-dark: #0a0a0a;
+            --bg-card: #111111;
+            --bg-code: #0d1117;
+            --text-white: #ffffff;
+            --text-gray: #888888;
+            --text-dim: #555555;
+            --border: #222222;
+            --success: #00ff41;
+            --warning: #ffaa00;
+            --danger: #ff4444;
+            --info: #00aaff;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: var(--bg-dark);
+            color: var(--text-white);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        /* Scanline effect */
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            background: repeating-linear-gradient(
+                0deg,
+                rgba(0, 0, 0, 0.1) 0px,
+                rgba(0, 0, 0, 0.1) 1px,
+                transparent 1px,
+                transparent 2px
+            );
+            z-index: 1000;
+            opacity: 0.15;
+        }
+
+        /* Layout */
+        .container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar Navigation */
+        .sidebar {
+            width: 280px;
+            background: var(--bg-card);
+            border-right: 1px solid var(--border);
+            padding: 24px;
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+        }
+
+        .sidebar-logo {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .sidebar-logo span {
+            font-size: 1.5rem;
+        }
+
+        .sidebar-subtitle {
+            color: var(--text-dim);
+            font-size: 0.8rem;
+            margin-bottom: 24px;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .nav-section {
+            margin-bottom: 20px;
+        }
+
+        .nav-section-title {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--text-dim);
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 12px;
+            color: var(--text-gray);
+            text-decoration: none;
+            font-size: 0.9rem;
+            border-radius: 6px;
+            transition: all 0.2s;
+            margin-bottom: 4px;
+        }
+
+        .nav-link:hover {
+            background: var(--primary-dim);
+            color: var(--primary);
+        }
+
+        .nav-link.active {
+            background: var(--primary-dim);
+            color: var(--primary);
+            border-left: 3px solid var(--primary);
+        }
+
+        .nav-link .status {
+            margin-left: auto;
+            font-size: 0.7rem;
+            padding: 2px 6px;
+            border-radius: 3px;
+        }
+
+        .status-done {
+            background: rgba(0, 255, 65, 0.2);
+            color: var(--success);
+        }
+
+        .status-progress {
+            background: rgba(255, 170, 0, 0.2);
+            color: var(--warning);
+        }
+
+        .status-pending {
+            background: rgba(85, 85, 85, 0.3);
+            color: var(--text-dim);
+        }
+
+        /* Main Content */
+        .main {
+            margin-left: 280px;
+            flex: 1;
+            padding: 40px 60px;
+            max-width: 1000px;
+        }
+
+        /* Header */
+        .page-header {
+            margin-bottom: 40px;
+            padding-bottom: 24px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .page-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .page-title .icon {
+            font-size: 2.5rem;
+        }
+
+        .page-description {
+            color: var(--text-gray);
+            font-size: 1.1rem;
+            max-width: 700px;
+        }
+
+        /* Progress Overview */
+        .progress-overview {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+            margin-bottom: 40px;
+        }
+
+        .progress-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .progress-card:hover {
+            border-color: var(--primary);
+        }
+
+        .progress-value {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 4px;
+        }
+
+        .progress-label {
+            color: var(--text-gray);
+            font-size: 0.85rem;
+        }
+
+        /* Section */
+        section {
+            margin-bottom: 60px;
+            scroll-margin-top: 20px;
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .section-icon {
+            font-size: 1.8rem;
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .section-badge {
+            margin-left: auto;
+            font-size: 0.75rem;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        /* Task List */
+        .task-list {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .task-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 14px;
+            padding: 16px 20px;
+            border-bottom: 1px solid var(--border);
+            transition: background 0.2s;
+        }
+
+        .task-item:last-child {
+            border-bottom: none;
+        }
+
+        .task-item:hover {
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .task-checkbox {
+            width: 22px;
+            height: 22px;
+            border: 2px solid var(--border);
+            border-radius: 4px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            margin-top: 2px;
+            transition: all 0.2s;
+        }
+
+        .task-checkbox:hover {
+            border-color: var(--primary);
+        }
+
+        .task-checkbox.checked {
+            background: var(--primary);
+            border-color: var(--primary);
+        }
+
+        .task-checkbox.checked::after {
+            content: "✓";
+            color: var(--bg-dark);
+            font-weight: 700;
+            font-size: 14px;
+        }
+
+        .task-content {
+            flex: 1;
+        }
+
+        .task-title {
+            font-weight: 600;
+            margin-bottom: 4px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .task-item.completed .task-title {
+            color: var(--text-dim);
+            text-decoration: line-through;
+        }
+
+        .task-description {
+            color: var(--text-gray);
+            font-size: 0.9rem;
+        }
+
+        .task-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 8px;
+        }
+
+        .task-tag {
+            font-size: 0.75rem;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .tag-code { background: rgba(0, 170, 255, 0.15); color: var(--info); }
+        .tag-design { background: rgba(255, 0, 255, 0.15); color: #ff66ff; }
+        .tag-ml { background: rgba(0, 255, 65, 0.15); color: var(--success); }
+        .tag-marketing { background: rgba(255, 170, 0, 0.15); color: var(--warning); }
+        .tag-legal { background: rgba(255, 68, 68, 0.15); color: var(--danger); }
+
+        /* Code Block */
+        .code-block {
+            background: var(--bg-code);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            margin: 16px 0;
+            overflow: hidden;
+        }
+
+        .code-header {
+            display: flex;
+            align-items: center;
+            padding: 10px 16px;
+            background: rgba(255, 255, 255, 0.03);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .code-lang {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
+            color: var(--text-dim);
+        }
+
+        .code-copy {
+            margin-left: auto;
+            background: none;
+            border: none;
+            color: var(--text-dim);
+            cursor: pointer;
+            font-size: 0.8rem;
+            padding: 4px 8px;
+            border-radius: 4px;
+            transition: all 0.2s;
+        }
+
+        .code-copy:hover {
+            background: var(--primary-dim);
+            color: var(--primary);
+        }
+
+        .code-content {
+            padding: 16px;
+            overflow-x: auto;
+        }
+
+        pre {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            line-height: 1.5;
+            color: var(--text-gray);
+            margin: 0;
+        }
+
+        code {
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .code-keyword { color: #ff79c6; }
+        .code-string { color: #f1fa8c; }
+        .code-function { color: #50fa7b; }
+        .code-comment { color: #6272a4; }
+        .code-variable { color: #bd93f9; }
+
+        /* Info Box */
+        .info-box {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-left: 4px solid var(--primary);
+            border-radius: 8px;
+            padding: 16px 20px;
+            margin: 20px 0;
+        }
+
+        .info-box.warning {
+            border-left-color: var(--warning);
+        }
+
+        .info-box.danger {
+            border-left-color: var(--danger);
+        }
+
+        .info-box-title {
+            font-weight: 600;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .info-box-content {
+            color: var(--text-gray);
+            font-size: 0.95rem;
+        }
+
+        /* Timeline */
+        .timeline {
+            position: relative;
+            padding-left: 30px;
+        }
+
+        .timeline::before {
+            content: "";
+            position: absolute;
+            left: 10px;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: var(--border);
+        }
+
+        .timeline-item {
+            position: relative;
+            margin-bottom: 30px;
+        }
+
+        .timeline-item::before {
+            content: "";
+            position: absolute;
+            left: -24px;
+            top: 6px;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: var(--border);
+            border: 3px solid var(--bg-dark);
+        }
+
+        .timeline-item.done::before {
+            background: var(--success);
+            box-shadow: 0 0 10px var(--primary-glow);
+        }
+
+        .timeline-item.current::before {
+            background: var(--warning);
+            animation: pulse-dot 2s infinite;
+        }
+
+        @keyframes pulse-dot {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(255, 170, 0, 0.4); }
+            50% { box-shadow: 0 0 0 8px rgba(255, 170, 0, 0); }
+        }
+
+        .timeline-date {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.8rem;
+            color: var(--text-dim);
+            margin-bottom: 4px;
+        }
+
+        .timeline-title {
+            font-weight: 600;
+            font-size: 1.1rem;
+            margin-bottom: 8px;
+        }
+
+        .timeline-content {
+            color: var(--text-gray);
+        }
+
+        /* KPI Table */
+        .kpi-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+
+        .kpi-table th,
+        .kpi-table td {
+            padding: 12px 16px;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .kpi-table th {
+            background: var(--bg-card);
+            font-weight: 600;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-dim);
+        }
+
+        .kpi-table td {
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .kpi-highlight {
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        /* Progress Bar */
+        .progress-bar-container {
+            background: var(--bg-card);
+            border-radius: 8px;
+            padding: 16px;
+            margin: 16px 0;
+        }
+
+        .progress-bar-label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+        }
+
+        .progress-bar {
+            height: 8px;
+            background: var(--border);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            background: var(--primary);
+            border-radius: 4px;
+            transition: width 0.5s ease;
+        }
+
+        /* Mobile */
+        @media (max-width: 1024px) {
+            .sidebar {
+                display: none;
+            }
+            .main {
+                margin-left: 0;
+                padding: 24px;
+            }
+            .progress-overview {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        section {
+            animation: fadeIn 0.4s ease;
+        }
+
+        /* Print */
+        @media print {
+            .sidebar { display: none; }
+            .main { margin: 0; }
+            body::before { display: none; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Sidebar Navigation -->
+        <nav class="sidebar">
+            <div class="sidebar-logo">
+                <span>🔍</span> Scan Tire AI
+            </div>
+            <div class="sidebar-subtitle">Development Roadmap v1.0</div>
+
+            <div class="nav-section">
+                <div class="nav-section-title">Overview</div>
+                <a href="#overview" class="nav-link active">
+                    📊 Project Status
+                </a>
+                <a href="#tech-stack" class="nav-link">
+                    ⚙️ Tech Stack
+                </a>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-section-title">Phase 1: MVP (M1-6)</div>
+                <a href="#month-1-2" class="nav-link">
+                    🚀 Month 1-2: MVP
+                    <span class="status status-progress">IN PROGRESS</span>
+                </a>
+                <a href="#month-3-4" class="nav-link">
+                    📈 Month 3-4: Data
+                    <span class="status status-pending">PENDING</span>
+                </a>
+                <a href="#month-5-6" class="nav-link">
+                    🧪 Month 5-6: Beta
+                    <span class="status status-pending">PENDING</span>
+                </a>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-section-title">Phase 2: Growth (M7-12)</div>
+                <a href="#month-7-9" class="nav-link">
+                    📣 Month 7-9: Scale
+                    <span class="status status-pending">PENDING</span>
+                </a>
+                <a href="#month-10-12" class="nav-link">
+                    💰 Month 10-12: Monetize
+                    <span class="status status-pending">PENDING</span>
+                </a>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-section-title">Phase 3: Full Product</div>
+                <a href="#month-13-18" class="nav-link">
+                    🔤 Month 13-18: OCR
+                    <span class="status status-pending">PENDING</span>
+                </a>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-section-title">Resources</div>
+                <a href="#code-examples" class="nav-link">
+                    💻 Code Examples
+                </a>
+                <a href="#legal" class="nav-link">
+                    ⚖️ Legal & Disclaimers
+                </a>
+                <a href="#marketing" class="nav-link">
+                    📢 Marketing Playbook
+                </a>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main">
+            <!-- Header -->
+            <header class="page-header">
+                <h1 class="page-title">
+                    <img src="logo.svg" alt="Scan Tire AI" width="100" height="100">
+                    <span class="icon">🛞</span>
+                    Scan Tire AI — Roadmap
+                </h1>
+                <p class="page-description">
+                    Automated tire inspection with Computer Vision & Deep Learning.
+                    Target: International B2B market (UAE, Turkey, Kazakhstan).
+                    Timeline: 18 months to $3000+ MRR.
+                </p>
+            </header>
+
+            <!-- Progress Overview -->
+            <div class="progress-overview">
+                <div class="progress-card">
+                    <div class="progress-value">60%</div>
+                    <div class="progress-label">Wear Accuracy</div>
+                </div>
+                <div class="progress-card">
+                    <div class="progress-value">0</div>
+                    <div class="progress-label">Beta Users</div>
+                </div>
+                <div class="progress-card">
+                    <div class="progress-value">$0</div>
+                    <div class="progress-label">MRR</div>
+                </div>
+                <div class="progress-card">
+                    <div class="progress-value">M1</div>
+                    <div class="progress-label">Current Phase</div>
+                </div>
+            </div>
+
+            <!-- Section: Overview -->
+            <section id="overview">
+                <div class="section-header">
+                    <span class="section-icon">📊</span>
+                    <h2 class="section-title">Project Overview</h2>
+                    <span class="section-badge status-progress">ACTIVE</span>
+                </div>
+
+                <div class="info-box">
+                    <div class="info-box-title">🎯 Current Focus: WEAR CLASSIFICATION ONLY</div>
+                    <div class="info-box-content">
+                        OCR (tire size recognition) postponed to Phase 3. 
+                        MVP delivers immediate value: "How worn are my tires?" 
+                        One model (ResNet18), one API endpoint, one clear result.
+                    </div>
+                </div>
+
+                <div class="progress-bar-container">
+                    <div class="progress-bar-label">
+                        <span>Overall Progress</span>
+                        <span>15%</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-bar-fill" style="width: 15%"></div>
+                    </div>
+                </div>
+
+                <div class="task-list">
+                    <div class="task-item completed">
+                        <div class="task-checkbox checked" onclick="this.classList.toggle('checked')"></div>
+                        <div class="task-content">
+                            <div class="task-title">Domain & Hosting</div>
+                            <div class="task-description">scantire.com registered, GitHub Pages, HTTPS enabled</div>
+                            <div class="task-meta">
+                                <span class="task-tag tag-code">infra</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="task-item completed">
+                        <div class="task-checkbox checked" onclick="this.classList.toggle('checked')"></div>
+                        <div class="task-content">
+                            <div class="task-title">Landing Page</div>
+                            <div class="task-description">Dark tech design, AR mockup, email waitlist form</div>
+                            <div class="task-meta">
+                                <span class="task-tag tag-design">design</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="task-item completed">
+                        <div class="task-checkbox checked" onclick="this.classList.toggle('checked')"></div>
+                        <div class="task-content">
+                            <div class="task-title">Labeling Tool (PyQt6)</div>
+                            <div class="task-description">Hybrid C++ preprocessing + Python ML, Active Learning GUI</div>
+                            <div class="task-meta">
+                                <span class="task-tag tag-ml">ml-tools</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="task-item">
+                        <div class="task-checkbox" onclick="this.classList.toggle('checked')"></div>
+                        <div class="task-content">
+                            <div class="task-title">Wear Classifier Training</div>
+                            <div class="task-description">ResNet18, 60% accuracy → target 85%+</div>
+                            <div class="task-meta">
+                                <span class="task-tag tag-ml">ml</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="task-item">
+                        <div class="task-checkbox" onclick="this.classList.toggle('checked')"></div>
+                        <div class="task-content">
+                            <div class="task-title">ONNX Export & Next.js Integration</div>
+                            <div class="task-description">Export ResNet18 → ONNX, inference via onnxruntime-node</div>
+                            <div class="task-meta">
+                                <span class="task-tag tag-code">backend</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section: Tech Stack -->
+            <section id="tech-stack">
+                <div class="section-header">
+                    <span class="section-icon">⚙️</span>
+                    <h2 class="section-title">Tech Stack</h2>
+                </div>
+
+                <div class="info-box warning">
+                    <div class="info-box-title">⚠️ NO OpenCV in Production</div>
+                    <div class="info-box-content">
+                        Preprocessing uses Sharp.js (Node.js native). 
+                        C++ core is for labeling tool ONLY. 
+                        Production pipeline: Sharp.js → ONNX Runtime.
+                    </div>
+                </div>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-lang">package.json (Next.js dependencies)</span>
+                        <button class="code-copy" onclick="copyCode(this)">📋 Copy</button>
+                    </div>
+                    <div class="code-content">
+<pre>{
+  <span class="code-string">"dependencies"</span>: {
+    <span class="code-string">"next"</span>: <span class="code-string">"^15.0.0"</span>,
+    <span class="code-string">"onnxruntime-node"</span>: <span class="code-string">"^1.21.0"</span>,
+    <span class="code-string">"sharp"</span>: <span class="code-string">"^0.34.0"</span>,
+    <span class="code-string">"react"</span>: <span class="code-string">"^19.0.0"</span>,
+    <span class="code-string">"typescript"</span>: <span class="code-string">"^5.0.0"</span>
+  }
+}</pre>
+                    </div>
+                </div>
+
+                <table class="kpi-table">
+                    <thead>
+                        <tr>
+                            <th>Component</th>
+                            <th>Technology</th>
+                            <th>Purpose</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Frontend</td>
+                            <td class="kpi-highlight">Next.js 15 (App Router)</td>
+                            <td>File upload, results display</td>
+                        </tr>
+                        <tr>
+                            <td>Backend API</td>
+                            <td class="kpi-highlight">Next.js API Routes</td>
+                            <td>POST /api/analyze</td>
+                        </tr>
+                        <tr>
+                            <td>ML Inference</td>
+                            <td class="kpi-highlight">ONNX Runtime Node.js</td>
+                            <td>Server-side inference</td>
+                        </tr>
+                        <tr>
+                            <td>Image Processing</td>
+                            <td class="kpi-highlight">Sharp.js</td>
+                            <td>Resize, normalize (NO OpenCV)</td>
+                        </tr>
+                        <tr>
+                            <td>ML Training</td>
+                            <td class="kpi-highlight">PyTorch + ResNet18</td>
+                            <td>Fine-tuning ImageNet weights</td>
+                        </tr>
+                        <tr>
+                            <td>Labeling Tool</td>
+                            <td class="kpi-highlight">PyQt6 + C++ Engine</td>
+                            <td>Dataset collection (LOCAL only)</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <!-- Section: Month 1-2 -->
+            <section id="month-1-2">
+                <div class="section-header">
+                    <span class="section-icon">🚀</span>
+                    <h2 class="section-title">Month 1-2: MVP (Wear-Only)</h2>
+                    <span class="section-badge status-progress">IN PROGRESS</span>
+                </div>
+
+                <div class="info-box">
+                    <div class="info-box-title">🎯 Goal: scantire.com/beta WORKS</div>
+                    <div class="info-box-content">
+                        User uploads tire tread photo → gets Wear class (New/Good/Medium/Worn/Critical) + estimated depth.
+                        Target: 10 people try it, 7+ get correct result.
+                    </div>
+                </div>
+
+                <div class="task-list">
+                    <div class="task-item">
+                        <div class="task-checkbox" onclick="this.classList.toggle('checked')"></div>
+                        <div class="task-content">
+                            <div class="task-title">Export ResNet18 Wear Classifier → ONNX</div>
+                            <div class="task-description">torch.onnx.export() with opset_version=17, input shape [1,3,224,224]</div>
+                            <div class="task-meta">
+                                <span class="task-tag tag-ml">ml</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="task-item">
+                        <div class="task-checkbox" onclick="this.classList.toggle('checked')"></div>
+                        <div class="task-content">
+                            <div class="task-title">Create Next.js API endpoint</div>
+                            <div class="task-description">POST /api/analyze — accepts FormData image, returns JSON</div>
+                            <div class="task-meta">
+                                <span class="task-tag tag-code">backend</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="task-item">
+                        <div class="task-checkbox" onclick="this.classList.toggle('checked')"></div>
+                        <div class="task-content">
+                            <div class="task-title">Sharp.js preprocessing</div>
+                            <div class="task-description">resize(224,224), toColorspace('rgb'), raw(), normalize 0-1</div>
+                            <div class="task-meta">
+                                <span class="task-tag tag-code">backend</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="task-item">
+                        <div class="task-checkbox" onclick="this.classList.toggle('checked')"></div>
+                        <div class="task-content">
+                            <div class="task-title">Build /beta page (frontend)</div>
+                            <div class="task-description">Drag & drop upload, loading spinner, result display with confidence</div>
+                            <div class="task-meta">
+                                <span class="task-tag tag-design">frontend</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="task-item">
+                        <div class="task-checkbox" onclick="this.classList.toggle('checked')"></div>
+                        <div class="task-content">
+                            <div class="task-title">Deploy to production</div>
+                            <div class="task-description">Vercel or own VPS. ONNX model in /public/models/</div>
+                            <div class="task-meta">
+                                <span class="task-tag tag-code">devops</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="task-item">
+                        <div class="task-checkbox" onclick="this.classList.toggle('checked')"></div>
+                        <div class="task-content">
+                            <div class="task-title">Add Terms of Service + Privacy Policy</div>
+                            <div class="task-description">/terms and /privacy pages with disclaimers</div>
+                            <div class="task-meta">
+                                <span class="task-tag tag-legal">legal</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="task-item">
+                        <div class="task-checkbox" onclick="this.classList.toggle('checked')"></div>
+                        <div class="task-content">
+                            <div class="task-title">Add Yandex.Metrika + Google Analytics</div>
+                            <div class="task-description">Track pageviews, form submissions, beta usage</div>
+                            <div class="task-meta">
+                                <span class="task-tag tag-marketing">analytics</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Code Example: ONNX Export -->
+                <h3 style="margin: 30px 0 16px; font-size: 1.1rem;">📦 Code: Export ResNet18 → ONNX</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-lang">python (export_wear_onnx.py)</span>
+                        <button class="code-copy" onclick="copyCode(this)">📋 Copy</button>
+                    </div>
+                    <div class="code-content">
+<pre><span class="code-keyword">import</span> torch
+<span class="code-keyword">import</span> torch.nn <span class="code-keyword">as</span> nn
+<span class="code-keyword">from</span> torchvision <span class="code-keyword">import</span> models
+
+<span class="code-comment"># Load trained model</span>
+model = models.resnet18(weights=<span class="code-variable">None</span>)
+model.fc = nn.Linear(model.fc.in_features, <span class="code-string">5</span>)  <span class="code-comment"># 5 wear classes</span>
+model.load_state_dict(torch.load(<span class="code-string">'weights/model_wear_best.pth'</span>))
+model.eval()
+
+<span class="code-comment"># Export to ONNX</span>
+dummy_input = torch.randn(<span class="code-string">1</span>, <span class="code-string">3</span>, <span class="code-string">224</span>, <span class="code-string">224</span>)
+torch.onnx.export(
+    model,
+    dummy_input,
+    <span class="code-string">'weights/wear_resnet18.onnx'</span>,
+    opset_version=<span class="code-string">17</span>,
+    input_names=[<span class="code-string">'input'</span>],
+    output_names=[<span class="code-string">'output'</span>],
+    dynamic_axes={<span class="code-string">'input'</span>: {<span class="code-string">0</span>: <span class="code-string">'batch'</span>}}
+)
+<span class="code-function">print</span>(<span class="code-string">"✅ Exported to wear_resnet18.onnx"</span>)</pre>
+                    </div>
+                </div>
+
+                <!-- Code Example: Next.js API -->
+                <h3 style="margin: 30px 0 16px; font-size: 1.1rem;">🔌 Code: Next.js API Route</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-lang">typescript (app/api/analyze/route.ts)</span>
+                        <button class="code-copy" onclick="copyCode(this)">📋 Copy</button>
+                    </div>
+                    <div class="code-content">
+<pre><span class="code-keyword">import</span> * <span class="code-keyword">as</span> ort <span class="code-keyword">from</span> <span class="code-string">'onnxruntime-node'</span>;
+<span class="code-keyword">import</span> sharp <span class="code-keyword">from</span> <span class="code-string">'sharp'</span>;
+<span class="code-keyword">import</span> { NextResponse } <span class="code-keyword">from</span> <span class="code-string">'next/server'</span>;
+
+<span class="code-keyword">const</span> CLASSES = [<span class="code-string">'New'</span>, <span class="code-string">'Good'</span>, <span class="code-string">'Medium'</span>, <span class="code-string">'Worn'</span>, <span class="code-string">'Critical'</span>];
+<span class="code-keyword">const</span> DEPTH_EST = [<span class="code-string">'7+ mm'</span>, <span class="code-string">'5-7 mm'</span>, <span class="code-string">'3-5 mm'</span>, <span class="code-string">'1.6-3 mm'</span>, <span class="code-string">'&lt;1.6 mm'</span>];
+
+<span class="code-keyword">let</span> session: ort.InferenceSession | <span class="code-variable">null</span> = <span class="code-variable">null</span>;
+
+<span class="code-keyword">async function</span> <span class="code-function">getSession</span>() {
+  <span class="code-keyword">if</span> (!session) {
+    session = <span class="code-keyword">await</span> ort.InferenceSession.create(
+      <span class="code-string">'./public/models/wear_resnet18.onnx'</span>
+    );
+  }
+  <span class="code-keyword">return</span> session;
+}
+
+<span class="code-keyword">export async function</span> <span class="code-function">POST</span>(request: Request) {
+  <span class="code-keyword">const</span> formData = <span class="code-keyword">await</span> request.formData();
+  <span class="code-keyword">const</span> imageFile = formData.get(<span class="code-string">'image'</span>) <span class="code-keyword">as</span> File;
+  
+  <span class="code-comment">// 1. Preprocessing (Sharp.js — NO OpenCV!)</span>
+  <span class="code-keyword">const</span> buffer = Buffer.from(<span class="code-keyword">await</span> imageFile.arrayBuffer());
+  <span class="code-keyword">const</span> { data, info } = <span class="code-keyword">await</span> sharp(buffer)
+    .resize(<span class="code-string">224</span>, <span class="code-string">224</span>)
+    .removeAlpha()
+    .raw()
+    .toBuffer({ resolveWithObject: <span class="code-variable">true</span> });
+  
+  <span class="code-comment">// 2. Normalize RGB 0-255 → 0-1, reshape CHW</span>
+  <span class="code-keyword">const</span> float32 = <span class="code-keyword">new</span> Float32Array(<span class="code-string">3</span> * <span class="code-string">224</span> * <span class="code-string">224</span>);
+  <span class="code-keyword">for</span> (<span class="code-keyword">let</span> c = <span class="code-string">0</span>; c < <span class="code-string">3</span>; c++) {
+    <span class="code-keyword">for</span> (<span class="code-keyword">let</span> i = <span class="code-string">0</span>; i < <span class="code-string">224</span> * <span class="code-string">224</span>; i++) {
+      float32[c * <span class="code-string">224</span> * <span class="code-string">224</span> + i] = data[i * <span class="code-string">3</span> + c] / <span class="code-string">255.0</span>;
+    }
+  }
+  
+  <span class="code-comment">// 3. Inference</span>
+  <span class="code-keyword">const</span> sess = <span class="code-keyword">await</span> getSession();
+  <span class="code-keyword">const</span> tensor = <span class="code-keyword">new</span> ort.Tensor(<span class="code-string">'float32'</span>, float32, [<span class="code-string">1</span>, <span class="code-string">3</span>, <span class="code-string">224</span>, <span class="code-string">224</span>]);
+  <span class="code-keyword">const</span> results = <span class="code-keyword">await</span> sess.run({ input: tensor });
+  
+  <span class="code-comment">// 4. Parse results</span>
+  <span class="code-keyword">const</span> probs = results.output.data <span class="code-keyword">as</span> Float32Array;
+  <span class="code-keyword">const</span> classId = probs.indexOf(Math.max(...probs));
+  
+  <span class="code-keyword">return</span> NextResponse.json({
+    wear: CLASSES[classId],
+    confidence: Math.round(probs[classId] * <span class="code-string">100</span>),
+    depth_estimate: DEPTH_EST[classId]
+  });
+}</pre>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section: Month 3-4 -->
+            <section id="month-3-4">
+                <div class="section-header">
+                    <span class="section-icon">📈</span>
+                    <h2 class="section-title">Month 3-4: Data Collection & Model Improvement</h2>
+                    <span class="section-badge status-pending">PENDING</span>
+                </div>
+
+                <div class="info-box">
+                    <div class="info-box-title">🎯 Goal: Wear Accuracy 60% → 75%</div>
+                    <div class="info-box-content">
+                        Label 500+ tread photos using PyQt6 tool. 
+                        Retrain ResNet18. Add TWI calibration (optional).
+                        Generate PDF reports with watermark.
+                    </div>
+                </div>
+
+                <div class="task-list">
+                    <div class="task-item">
+                        <div class="task-checkbox" onclick="this.classList.toggle('checked')"></div>
+                        <div class="task-content">
+                            <div class="task-title">Label 500+ tire tread photos</div>
+                            <div class="task-description">Using labeling tool, all 5 wear classes balanced</div>
+                            <div class="task-meta">
+                                <span class="task-tag tag-ml">data</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="task-item">
+                        <div class="task-checkbox" onclick="this.classList.toggle('checked')"></div>
+                        <div class="task-content">
+                            <div class="task-title">Retrain ResNet18</div>
+                            <div class="task-description">50 epochs, batch 16, early stopping</div>
+                            <div class="task-meta">
+                                <span class="task-tag tag-ml">ml</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="task-item">
+                        <div class="task-checkbox" onclick="this.classList.toggle('checked')"></div>
+                        <div class="task-content">
+                            <div class="task-title">Implement PDF report generation</div>
+                            <div class="task-description">PDFKit or Puppeteer, watermark "scantire.com"</div>
+                            <div class="task-meta">
+                                <span class="task-tag tag-code">backend</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="task-item">
+                        <div class="task-checkbox" onclick="this.classList.toggle('checked')"></div>
+                        <div class="task-content">
+                            <div class="task-title">Add confidence threshold logic</div>
+                            <div class="task-description">If confidence < 60%, show "Uncertain, try another photo"</div>
+                            <div class="task-meta">
+                                <span class="task-tag tag-code">backend</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section: Month 5-6 -->
+            <section id="month-5-6">
+                <div class="section-header">
+                    <span class="section-icon">🧪</span>
+                    <h2 class="section-title">Month 5-6: Beta Testing</h2>
+                    <span class="section-badge status-pending">PENDING</span>
+                </div>
+
+                <div class="info-box">
+                    <div class="info-box-title">🎯 Goal: 100 Real Users</div>
+                    <div class="info-box-content">
+                        Post on Drive2.ru, Reddit. Send 20 cold emails to UAE tire shops.
+                        Collect feedback. Iterate fast.
+                    </div>
+                </div>
+
+                <div class="task-list">
+                    <div class="task-item">
+                        <div class="task-checkbox" onclick="this.classList.toggle('checked')"></div>
+                        <div class="task-content">
+                            <div class="task-title">Write Reddit posts (r/SideProject, r/cars)</div>
+                            <div class="task-description">"Show: Scan Tire AI — grade tire wear in 10 seconds"</div>
+                            <div class="task-meta">
+                                <span class="task-tag tag-marketing">marketing</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="task-item">
+                        <div class="task-checkbox" onclick="this.classList.toggle('checked')"></div>
+                        <div class="task-content">
+                            <div class="task-title">Post on Drive2.ru</div>
+                            <div class="task-description">"Попробовал AI для оценки износа шин — результаты"</div>
+                            <div class="task-meta">
+                                <span class="task-tag tag-marketing">marketing</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="task-item">
+                        <div class="task-checkbox" onclick="this.classList.toggle('checked')"></div>
+                        <div class="task-content">
+                            <div class="task-title">Send 20 cold emails to UAE tire shops</div>
+                            <div class="task-description">Google Maps → find shops → email from website</div>
+                            <div class="task-meta">
+                                <span class="task-tag tag-marketing">outreach</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="task-item">
+                        <div class="task-checkbox" onclick="this.classList.toggle('checked')"></div>
+                        <div class="task-content">
+                            <div class="task-title">Add feedback form</div>
+                            <div class="task-description">"Was this result accurate?" thumbs up/down</div>
+                            <div class="task-meta">
+                                <span class="task-tag tag-design">ux</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section: Month 7-9 -->
+            <section id="month-7-9">
+                <div class="section-header">
+                    <span class="section-icon">📣</span>
+                    <h2 class="section-title">Month 7-9: Scale & Growth</h2>
+                    <span class="section-badge status-pending">PENDING</span>
+                </div>
+
+                <div class="task-list">
+                    <div class="task-item">
+                        <div class="task-checkbox" onclick="this.classList.toggle('checked')"></div>
+                        <div class="task-content">
+                            <div class="task-title">Improve accuracy to 85%+</div>
+                            <div class="task-description">1000+ labeled samples, data augmentation</div>
+                        </div>
+                    </div>
+                    <div class="task-item">
+                        <div class="task-checkbox" onclick="this.classList.toggle('checked')"></div>
+                        <div class="task-content">
+                            <div class="task-title">Product Hunt launch</div>
+                            <div class="task-description">Tuesday launch, prepare screenshots, description</div>
+                        </div>
+                    </div>
+                    <div class="task-item">
+                        <div class="task-checkbox" onclick="this.classList.toggle('checked')"></div>
+                        <div class="task-content">
+                            <div class="task-title">Mobile PWA optimization</div>
+                            <div class="task-description">Camera access, offline mode (future)</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section: Month 10-12 -->
+            <section id="month-10-12">
+                <div class="section-header">
+                    <span class="section-icon">💰</span>
+                    <h2 class="section-title">Month 10-12: Monetization</h2>
+                    <span class="section-badge status-pending">PENDING</span>
+                </div>
+
+                <div class="info-box">
+                    <div class="info-box-title">🎯 Goal: $500 MRR</div>
+                    <div class="info-box-content">
+                        Launch Freemium: Free (10/month) + Pro ($19/month).
+                        First B2B pilots with fleet managers.
+                    </div>
+                </div>
+
+                <table class="kpi-table">
+                    <thead>
+                        <tr>
+                            <th>Period</th>
+                            <th>Users</th>
+                            <th>Accuracy</th>
+                            <th>MRR</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>M1-2</td>
+                            <td>10</td>
+                            <td>60%</td>
+                            <td>$0</td>
+                        </tr>
+                        <tr>
+                            <td>M3-4</td>
+                            <td>50</td>
+                            <td>75%</td>
+                            <td>$0</td>
+                        </tr>
+                        <tr>
+                            <td>M5-6</td>
+                            <td>100</td>
+                            <td>75%</td>
+                            <td>$0</td>
+                        </tr>
+                        <tr>
+                            <td>M7-9</td>
+                            <td>500</td>
+                            <td>85%</td>
+                            <td>$0</td>
+                        </tr>
+                        <tr>
+                            <td>M10-12</td>
+                            <td class="kpi-highlight">1000</td>
+                            <td class="kpi-highlight">85%</td>
+                            <td class="kpi-highlight">$500</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <!-- Section: Month 13-18 (OCR) -->
+            <section id="month-13-18">
+                <div class="section-header">
+                    <span class="section-icon">🔤</span>
+                    <h2 class="section-title">Month 13-18: OCR Sidewall (Phase 2)</h2>
+                    <span class="section-badge status-pending">FUTURE</span>
+                </div>
+
+                <div class="info-box warning">
+                    <div class="info-box-title">⚠️ Only when Wear is stable (85%+, 1000+ users)</div>
+                    <div class="info-box-content">
+                        Add tire size recognition: 205/55R16. 
+                        Requires YOLOX detector + OCR MLP + JS Slicer.
+                        Complex pipeline — postponed to Phase 2.
+                    </div>
+                </div>
+
+                <div class="task-list">
+                    <div class="task-item">
+                        <div class="task-checkbox" onclick="this.classList.toggle('checked')"></div>
+                        <div class="task-content">
+                            <div class="task-title">Collect 1000+ sidewall photos (YOLOX labels)</div>
+                            <div class="task-description">4 classes: tire_width, tire_profile, tire_diameter, load_index</div>
+                        </div>
+                    </div>
+                    <div class="task-item">
+                        <div class="task-checkbox" onclick="this.classList.toggle('checked')"></div>
+                        <div class="task-content">
+                            <div class="task-title">Train YOLOX detector</div>
+                            <div class="task-description">Fine-tune from COCO weights, 50 epochs</div>
+                        </div>
+                    </div>
+                    <div class="task-item">
+                        <div class="task-checkbox" onclick="this.classList.toggle('checked')"></div>
+                        <div class="task-content">
+                            <div class="task-title">Export YOLOX + OCR to ONNX</div>
+                            <div class="task-description">Two models for cascade inference</div>
+                        </div>
+                    </div>
+                    <div class="task-item">
+                        <div class="task-checkbox" onclick="this.classList.toggle('checked')"></div>
+                        <div class="task-content">
+                            <div class="task-title">Implement JS Slicer (Canvas API)</div>
+                            <div class="task-description">Vertical projection → character segmentation (NO OpenCV)</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section: Code Examples -->
+            <section id="code-examples">
+                <div class="section-header">
+                    <span class="section-icon">💻</span>
+                    <h2 class="section-title">Code Examples</h2>
+                </div>
+
+                <h3 style="margin: 24px 0 16px; font-size: 1.1rem;">🖼️ Sharp.js Preprocessing (NO OpenCV)</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-lang">typescript</span>
+                        <button class="code-copy" onclick="copyCode(this)">📋 Copy</button>
+                    </div>
+                    <div class="code-content">
+<pre><span class="code-keyword">import</span> sharp <span class="code-keyword">from</span> <span class="code-string">'sharp'</span>;
+
+<span class="code-keyword">async function</span> <span class="code-function">preprocessImage</span>(buffer: Buffer): Promise&lt;Float32Array&gt; {
+  <span class="code-comment">// Resize to 224x224, convert to RGB raw buffer</span>
+  <span class="code-keyword">const</span> { data } = <span class="code-keyword">await</span> sharp(buffer)
+    .resize(<span class="code-string">224</span>, <span class="code-string">224</span>, { fit: <span class="code-string">'cover'</span> })
+    .removeAlpha()
+    .raw()
+    .toBuffer({ resolveWithObject: <span class="code-variable">true</span> });
+  
+  <span class="code-comment">// Convert HWC → CHW, normalize 0-255 → 0-1</span>
+  <span class="code-keyword">const</span> float32 = <span class="code-keyword">new</span> Float32Array(<span class="code-string">3</span> * <span class="code-string">224</span> * <span class="code-string">224</span>);
+  
+  <span class="code-keyword">for</span> (<span class="code-keyword">let</span> c = <span class="code-string">0</span>; c < <span class="code-string">3</span>; c++) {
+    <span class="code-keyword">for</span> (<span class="code-keyword">let</span> h = <span class="code-string">0</span>; h < <span class="code-string">224</span>; h++) {
+      <span class="code-keyword">for</span> (<span class="code-keyword">let</span> w = <span class="code-string">0</span>; w < <span class="code-string">224</span>; w++) {
+        <span class="code-keyword">const</span> srcIdx = (h * <span class="code-string">224</span> + w) * <span class="code-string">3</span> + c;
+        <span class="code-keyword">const</span> dstIdx = c * <span class="code-string">224</span> * <span class="code-string">224</span> + h * <span class="code-string">224</span> + w;
+        float32[dstIdx] = data[srcIdx] / <span class="code-string">255.0</span>;
+      }
+    }
+  }
+  
+  <span class="code-keyword">return</span> float32;
+}</pre>
+                    </div>
+                </div>
+
+                <h3 style="margin: 24px 0 16px; font-size: 1.1rem;">📤 Frontend: File Upload Component</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-lang">tsx (components/FileUpload.tsx)</span>
+                        <button class="code-copy" onclick="copyCode(this)">📋 Copy</button>
+                    </div>
+                    <div class="code-content">
+<pre><span class="code-string">'use client'</span>;
+<span class="code-keyword">import</span> { useState } <span class="code-keyword">from</span> <span class="code-string">'react'</span>;
+
+<span class="code-keyword">export default function</span> <span class="code-function">FileUpload</span>() {
+  <span class="code-keyword">const</span> [result, setResult] = useState&lt;<span class="code-variable">null</span> | WearResult&gt;(<span class="code-variable">null</span>);
+  <span class="code-keyword">const</span> [loading, setLoading] = useState(<span class="code-variable">false</span>);
+  
+  <span class="code-keyword">async function</span> <span class="code-function">handleUpload</span>(file: File) {
+    setLoading(<span class="code-variable">true</span>);
+    
+    <span class="code-keyword">const</span> formData = <span class="code-keyword">new</span> FormData();
+    formData.append(<span class="code-string">'image'</span>, file);
+    
+    <span class="code-keyword">const</span> res = <span class="code-keyword">await</span> fetch(<span class="code-string">'/api/analyze'</span>, {
+      method: <span class="code-string">'POST'</span>,
+      body: formData
+    });
+    
+    <span class="code-keyword">const</span> data = <span class="code-keyword">await</span> res.json();
+    setResult(data);
+    setLoading(<span class="code-variable">false</span>);
+  }
+  
+  <span class="code-keyword">return</span> (
+    &lt;div&gt;
+      &lt;input 
+        type=<span class="code-string">"file"</span> 
+        accept=<span class="code-string">"image/*"</span>
+        onChange={(e) => e.target.files?.[<span class="code-string">0</span>] && handleUpload(e.target.files[<span class="code-string">0</span>])}
+      /&gt;
+      {loading && &lt;p&gt;Analyzing...&lt;/p&gt;}
+      {result && (
+        &lt;div&gt;
+          &lt;h2&gt;Wear: {result.wear}&lt;/h2&gt;
+          &lt;p&gt;Confidence: {result.confidence}%&lt;/p&gt;
+          &lt;p&gt;Estimated depth: {result.depth_estimate}&lt;/p&gt;
+        &lt;/div&gt;
+      )}
+    &lt;/div&gt;
+  );
+}</pre>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section: Legal -->
+            <section id="legal">
+                <div class="section-header">
+                    <span class="section-icon">⚖️</span>
+                    <h2 class="section-title">Legal & Disclaimers</h2>
+                </div>
+
+                <div class="info-box danger">
+                    <div class="info-box-title">⚠️ CRITICAL: Add Disclaimer BEFORE Launch</div>
+                    <div class="info-box-content">
+                        Every page with results MUST show disclaimer.
+                        Users MUST accept terms before using.
+                        NO warranty, NO liability for accidents.
+                    </div>
+                </div>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-lang">text (Disclaimer Modal)</span>
+                        <button class="code-copy" onclick="copyCode(this)">📋 Copy</button>
+                    </div>
+                    <div class="code-content">
+<pre>⚠️ IMPORTANT LEGAL NOTICE — PLEASE READ
+
+Scan Tire AI provides AI-generated ESTIMATES for educational purposes ONLY.
+
+This is NOT a replacement for:
+• Professional tire inspection by certified mechanic
+• Certified tread depth gauge measurements
+• Visual inspection under proper lighting
+
+By using this service, you acknowledge:
+✓ Results are AI estimates (current accuracy: ~60-75%)
+✓ You are SOLELY responsible for tire safety decisions
+✓ We assume NO liability for accidents, injuries, or damages
+✓ Always verify with certified professional before driving
+
+This is a BETA version. Accuracy is improving.
+DO NOT rely on it for critical safety decisions.
+
+[ I Understand and Accept ]    [ Cancel ]</pre>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section: Marketing -->
+            <section id="marketing">
+                <div class="section-header">
+                    <span class="section-icon">📢</span>
+                    <h2 class="section-title">Marketing Playbook</h2>
+                </div>
+
+                <h3 style="margin: 24px 0 16px; font-size: 1.1rem;">🌍 Target Markets (Priority Order)</h3>
+                <table class="kpi-table">
+                    <thead>
+                        <tr>
+                            <th>Market</th>
+                            <th>Language</th>
+                            <th>Channels</th>
+                            <th>Why</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="kpi-highlight">🇦🇪 UAE</td>
+                            <td>English</td>
+                            <td>LinkedIn, Google Maps cold email</td>
+                            <td>High purchasing power, tech-friendly</td>
+                        </tr>
+                        <tr>
+                            <td class="kpi-highlight">🇹🇷 Turkey</td>
+                            <td>English/Turkish</td>
+                            <td>Sahibinden.com, Arabam.com</td>
+                            <td>Huge used car market</td>
+                        </tr>
+                        <tr>
+                            <td class="kpi-highlight">🇰🇿 Kazakhstan</td>
+                            <td>Russian</td>
+                            <td>Kolesa.kz, Drive2.ru</td>
+                            <td>Russian language, no sanctions</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3 style="margin: 30px 0 16px; font-size: 1.1rem;">📧 Cold Email Template</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-lang">text</span>
+                        <button class="code-copy" onclick="copyCode(this)">📋 Copy</button>
+                    </div>
+                    <div class="code-content">
+<pre>Subject: Free AI tire inspector for [Shop Name] (beta test)
+
+Hi [Name],
+
+I found your tire shop on Google Maps — looks professional!
+
+Quick question: Do you ever have disputes with customers 
+about tire condition? ("You said it's good, but it's worn!")
+
+I built an AI tool that grades tire wear from photos in 10 seconds.
+No special equipment — just a smartphone camera.
+
+Would you test it FREE for 2 weeks?
+
+Demo: https://scantire.com/beta
+
+Just snap photos of 3-5 tires, tell me if the grades match reality.
+Your feedback will help me improve the AI.
+
+Best,
+Slava Kuzkin
+Scan Tire AI
+scantireai@gmail.com</pre>
+                    </div>
+                </div>
+
+                <h3 style="margin: 30px 0 16px; font-size: 1.1rem;">📝 LinkedIn Build in Public (Post Templates)</h3>
+                <div class="task-list">
+                    <div class="task-item">
+                        <div class="task-checkbox" onclick="this.classList.toggle('checked')"></div>
+                        <div class="task-content">
+                            <div class="task-title">Day 1: Introduction post</div>
+                            <div class="task-description">"I'm 48, work in a tire shop. Building AI to automate tire inspection. Follow along."</div>
+                        </div>
+                    </div>
+                    <div class="task-item">
+                        <div class="task-checkbox" onclick="this.classList.toggle('checked')"></div>
+                        <div class="task-content">
+                            <div class="task-title">Day 5: Progress update</div>
+                            <div class="task-description">"Registered domain. Deployed landing. First 3 emails collected. [screenshot]"</div>
+                        </div>
+                    </div>
+                    <div class="task-item">
+                        <div class="task-checkbox" onclick="this.classList.toggle('checked')"></div>
+                        <div class="task-content">
+                            <div class="task-title">Day 10: Technical deep-dive</div>
+                            <div class="task-description">"Trained ResNet18 on 500 tire photos. Accuracy: 60% → 72%. Here's what I learned..."</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Footer -->
+            <footer style="margin-top: 80px; padding-top: 40px; border-top: 1px solid var(--border); text-align: center; color: var(--text-dim);">
+                <p style="font-family: 'JetBrains Mono', monospace; font-size: 0.9rem;">
+                    © 2026 Scan Tire AI — Built by Slava Kuzkin 🇷🇺
+                </p>
+                <p style="margin-top: 8px; font-size: 0.8rem;">
+                    "Kuzkin's son is here to show the world what Russian AI can do" 💪
+                </p>
+            </footer>
+        </main>
+    </div>
+
+    <script>
+        // Copy code to clipboard
+        function copyCode(button) {
+            const codeBlock = button.closest('.code-block');
+            const code = codeBlock.querySelector('pre').innerText;
+            navigator.clipboard.writeText(code).then(() => {
+                button.textContent = '✅ Copied!';
+                setTimeout(() => button.textContent = '📋 Copy', 2000);
+            });
+        }
+
+        // Smooth scroll for navigation
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const href = link.getAttribute('href');
+                const target = document.querySelector(href);
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth' });
+                    
+                    // Update active state
+                    document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+                    link.classList.add('active');
+                }
+            });
+        });
+
+        // Highlight active section on scroll
+        window.addEventListener('scroll', () => {
+            const sections = document.querySelectorAll('section');
+            let current = '';
+            
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                if (scrollY >= sectionTop - 100) {
+                    current = section.getAttribute('id');
+                }
+            });
+            
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href') === '#' + current) {
+                    link.classList.add('active');
+                }
+            });
+        });
+
+        // Persist checkbox state in localStorage
+        document.querySelectorAll('.task-checkbox').forEach((checkbox, index) => {
+            const key = `task-${index}`;
+            
+            // Load saved state
+            if (localStorage.getItem(key) === 'checked') {
+                checkbox.classList.add('checked');
+                checkbox.closest('.task-item').classList.add('completed');
+            }
+            
+            // Save on click
+            checkbox.addEventListener('click', () => {
+                if (checkbox.classList.contains('checked')) {
+                    localStorage.setItem(key, 'checked');
+                    checkbox.closest('.task-item').classList.add('completed');
+                } else {
+                    localStorage.removeItem(key);
+                    checkbox.closest('.task-item').classList.remove('completed');
+                }
+            });
+        });
+
+        // Update progress cards based on checked tasks
+        function updateProgress() {
+            const total = document.querySelectorAll('.task-checkbox').length;
+            const checked = document.querySelectorAll('.task-checkbox.checked').length;
+            const percentage = Math.round((checked / total) * 100);
+            
+            // You could update the progress cards here
+            console.log(`Progress: ${percentage}% (${checked}/${total} tasks)`);
+        }
+        
+        // Initial progress calculation
+        updateProgress();
+    </script>
+</body>
+</html>

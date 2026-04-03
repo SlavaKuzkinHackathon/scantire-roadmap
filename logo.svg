@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" fill="none">
+  <!-- Вариант 1: Шина с протектором и сканирующей линией -->
+  <g id="logo-v1">
+    <!-- Контур шины -->
+    <circle cx="100" cy="100" r="90" stroke="#00ff41" stroke-width="8" fill="none"/>
+    
+    <!-- Линии протектора (3 канавки) -->
+    <path d="M 100 30 L 100 50" stroke="#00ff41" stroke-width="6" stroke-linecap="round"/>
+    <path d="M 100 150 L 100 170" stroke="#00ff41" stroke-width="6" stroke-linecap="round"/>
+    <path d="M 50 60 L 62 72" stroke="#00ff41" stroke-width="6" stroke-linecap="round"/>
+    <path d="M 138 128 L 150 140" stroke="#00ff41" stroke-width="6" stroke-linecap="round"/>
+    <path d="M 50 140 L 62 128" stroke="#00ff41" stroke-width="6" stroke-linecap="round"/>
+    <path d="M 138 72 L 150 60" stroke="#00ff41" stroke-width="6" stroke-linecap="round"/>
+    
+    <!-- Сканирующая линия (диагональная) -->
+    <line x1="60" y1="100" x2="140" y2="100" stroke="#00ff41" stroke-width="3">
+      <animate attributeName="x1" from="40" to="160" dur="2s" repeatCount="indefinite"/>
+      <animate attributeName="x2" from="60" to="180" dur="2s" repeatCount="indefinite"/>
+    </line>
+    
+    <!-- Точки сканирования -->
+    <circle cx="100" cy="100" r="4" fill="#00ff41"/>
+  </g>
+</svg>
