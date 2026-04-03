@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scan Tire AI — Roadmap</title>
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100' fill='none'><circle cx='50' cy='50' r='45' stroke='%2300ff41' stroke-width='4' fill='none'/><path d='M 50 15 L 50 28' stroke='%2300ff41' stroke-width='3' stroke-linecap='round'/><path d='M 50 72 L 50 85' stroke='%2300ff41' stroke-width='3' stroke-linecap='round'/><path d='M 22 28 L 30 36' stroke='%2300ff41' stroke-width='3' stroke-linecap='round'/><path d='M 70 64 L 78 72' stroke='%2300ff41' stroke-width='3' stroke-linecap='round'/><path d='M 22 72 L 30 64' stroke='%2300ff41' stroke-width='3' stroke-linecap='round'/><path d='M 70 36 L 78 28' stroke='%2300ff41' stroke-width='3' stroke-linecap='round'/><line x1='30' y1='50' x2='70' y2='50' stroke='%2300ff41' stroke-width='2'/></svg>">
+    
+    <style>
+        :root {
+            --bg-primary: #0a0a0a;
+            --bg-secondary: #111111;
+            --text-primary: #ffffff;
+            --text-secondary: #888888;
+            --accent: #00ff41;
+            --border: #222222;
+            --card-bg: #111111;
+        }
+
+        [data-theme="light"] {
+            --bg-primary: #ffffff;
+            --bg-secondary: #f5f5f5;
+            --text-primary: #0a0a0a;
+            --text-secondary: #666666;
+            --accent: #00aa2b;
+            --border: #e0e0e0;
+            --card-bg: #f9f9f9;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            transition: all 0.3s ease;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        /* Header */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 60px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 700;
+            font-size: 1.25rem;
+            color: var(--text-primary);
+            text-decoration: none;
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+        }
+
+        /* Theme Toggle */
+        .theme-toggle {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 50px;
+            padding: 6px;
+            cursor: pointer;
+            display: flex;
+            gap: 4px;
+            transition: all 0.3s;
+        }
+
+        .theme-toggle:hover {
+            border-color: var(--accent);
+        }
+
+        .theme-btn {
+            background: transparent;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 50px;
+            cursor: pointer;
+            font-size: 1.1rem;
+            transition: all 0.3s;
+            color: var(--text-secondary);
+        }
+
+        .theme-btn.active {
+            background: var(--accent);
+            color: var(--bg-primary);
+        }
+
+        /* Video Section */
+        .video-section {
+            margin-bottom: 60px;
+            border-radius: 16px;
+            overflow: hidden;
+            border: 1px solid var(--border);
+            background: var(--bg-secondary);
+        }
+
+        .video-wrapper {
+            position: relative;
+            width: 100%;
+            padding-bottom: 56.25%; /* 16:9 */
+            background: #000;
+        }
+
+        .video-wrapper video {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* Navigation Links */
+        .nav-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .nav-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 24px;
+            text-decoration: none;
+            color: var(--text-primary);
+            transition: all 0.3s;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .nav-card:hover {
+            border-color: var(--accent);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(0, 255, 65, 0.1);
+        }
+
+        .nav-card-icon {
+            font-size: 2rem;
+            margin-bottom: 8px;
+        }
+
+        .nav-card-title {
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        .nav-card-desc {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding-top: 40px;
+            border-top: 1px solid var(--border);
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 600px) {
+            .container {
+                padding: 20px 16px;
+            }
+
+            header {
+                flex-direction: column;
+                gap: 20px;
+                align-items: flex-start;
+            }
+
+            .nav-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header>
+            <a href="/" class="logo">
+                <svg class="logo-icon" viewBox="0 0 100 100" fill="none">
+                    <circle cx="50" cy="50" r="45" stroke="var(--accent)" stroke-width="4" fill="none"/>
+                    <path d="M 50 15 L 50 28" stroke="var(--accent)" stroke-width="3" stroke-linecap="round"/>
+                    <path d="M 50 72 L 50 85" stroke="var(--accent)" stroke-width="3" stroke-linecap="round"/>
+                    <path d="M 22 28 L 30 36" stroke="var(--accent)" stroke-width="3" stroke-linecap="round"/>
+                    <path d="M 70 64 L 78 72" stroke="var(--accent)" stroke-width="3" stroke-linecap="round"/>
+                    <path d="M 22 72 L 30 64" stroke="var(--accent)" stroke-width="3" stroke-linecap="round"/>
+                    <path d="M 70 36 L 78 28" stroke="var(--accent)" stroke-width="3" stroke-linecap="round"/>
+                    <line x1="30" y1="50" x2="70" y2="50" stroke="var(--accent)" stroke-width="2"/>
+                </svg>
+                Scan Tire AI
+            </a>
+            
+            <div class="theme-toggle">
+                <button class="theme-btn active" onclick="setTheme('dark')" title="Тёмная тема">🌙</button>
+                <button class="theme-btn" onclick="setTheme('light')" title="Светлая тема">☀️</button>
+            </div>
+        </header>
+
+        <!-- Video Section -->
+        <section class="video-section">
+            <div class="video-wrapper">
+                <video autoplay muted loop playsinline>
+                    <source src="logo/9a2e683a-1328-4644-9715-2e83111f4e6b.mp4" type="video/mp4">
+                    Ваш браузер не поддерживает видео.
+                </video>
+            </div>
+        </section>
+
+        <!-- Navigation -->
+        <nav class="nav-grid">
+            <a href="roadmap.html" class="nav-card">
+                <div class="nav-card-icon">🗺️</div>
+                <div class="nav-card-title">Scan Tire AI — Roadmap</div>
+                <div class="nav-card-desc">Основная дорожная карта проекта</div>
+            </a>
+            
+            <a href="index_right.html" class="nav-card">
+                <div class="nav-card-icon">📊</div>
+                <div class="nav-card-title">План развития Scan Tire AI</div>
+                <div class="nav-card-desc">Правая версия плана развития</div>
+            </a>
+            
+            <a href="index_left.html" class="nav-card">
+                <div class="nav-card-icon">📈</div>
+                <div class="nav-card-title">Scan Tire AI — План развития</div>
+                <div class="nav-card-desc">Левая версия плана развития</div>
+            </a>
+        </nav>
+
+        <!-- Footer -->
+        <footer>
+            <p>© 2026 Scan Tire AI. AI-Powered Tire Inspection.</p>
+        </footer>
+    </div>
+
+    <script>
+        // Theme Toggle
+        function setTheme(theme) {
+            document.documentElement.setAttribute('data-theme', theme);
+            localStorage.setItem('theme', theme);
+            
+            // Update buttons
+            const buttons = document.querySelectorAll('.theme-btn');
+            buttons.forEach(btn => btn.classList.remove('active'));
+            
+            if (theme === 'dark') {
+                buttons[0].classList.add('active');
+            } else {
+                buttons[1].classList.add('active');
+            }
+        }
+
+        // Load saved theme
+        const savedTheme = localStorage.getItem('theme') || 'dark';
+        setTheme(savedTheme);
+    </script>
+</body>
+</html>
