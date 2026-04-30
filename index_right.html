@@ -515,6 +515,7 @@
         <div class="nav-section">
             <div class="nav-section-title">Разработка</div>
             <a href="#month-1-2" class="nav-link">Месяц 1-2: MVP <span class="status status-progress">В ПРОЦЕССЕ</span></a>
+            <a href="#current-interface" class="nav-link">Текущий интерфейс <span class="status status-done">ГОТОВО</span></a>
             <a href="#month-3-4" class="nav-link">Месяц 3-4: Данные <span class="status status-pending">В ОЖИДАНИИ</span></a>
             <a href="#month-5-6" class="nav-link">Месяц 5-6: Бета <span class="status status-pending">В ОЖИДАНИИ</span></a>
             <a href="#month-13-18" class="nav-link">Фаза 2: OCR <span class="status status-pending">БУДУЩЕЕ</span></a>
@@ -566,6 +567,15 @@
                 <h2 class="section-title">Стратегия продукта (Только для меня)</h2>
             </div>
 
+            <div class="info-box">
+                <div class="info-box-title">Текущий интерфейс: "Зрение Терминатора"</div>
+                <div class="info-box-content">
+                    Веб-интерфейс уже демонстрирует рабочий процесс AI-инспекции в стиле "Терминатор / Matrix Vision".
+                    Пользователь загружает фото шины и видит экран анализа с тактическими AR-элементами,
+                    неоново-зелеными акцентами и визуальной обратной связью в реальном времени.
+                </div>
+            </div>
+
             <div class="info-box danger">
                 <div class="info-box-title">Главное правило: LEAN (Бережливый стартап)</div>
                 <div class="info-box-content">
@@ -588,8 +598,8 @@
                         <div class="task-description">Вся тяжелая работа с подготовкой датасетов идет ТОЛЬКО на моем компе. Сервер не должен заниматься предобработкой видео или массовой нарезкой.</div>
                     </div>
                 </div>
-                <div class="task-item">
-                    <div class="task-checkbox" onclick="this.classList.toggle('checked')"></div>
+                <div class="task-item completed">
+                    <div class="task-checkbox checked" onclick="this.classList.toggle('checked')"></div>
                     <div class="task-content">
                         <div class="task-title">Инференс через ONNX в Next.js</div>
                         <div class="task-description">Дешевый хостинг. Никаких дорогих GPU-серверов на старте. Node.js + onnxruntime на обычном Vercel/VPS потянет первые сотни запросов.</div>
@@ -670,6 +680,13 @@
                 </div>
             </div>
 
+            <div class="info-box success">
+                <div class="info-box-title">✅ Достигнуто: Рабочий интерфейс "Зрение Терминатора"</div>
+                <div class="info-box-content">
+                    Интерфейс уже демонстрирует полный рабочий процесс AI-инспекции с визуальной обратной связью в стиле тактического HUD. Пользователь видит не просто текстовый результат, а полноценный визуальный анализ с цветовой индикацией износа.
+                </div>
+            </div>
+
             <div class="task-list">
                 <div class="task-item completed">
                     <div class="task-checkbox checked" onclick="this.classList.toggle('checked')"></div>
@@ -679,16 +696,16 @@
                         <div class="task-meta"><span class="task-tag tag-dev">dev</span></div>
                     </div>
                 </div>
-                <div class="task-item">
-                    <div class="task-checkbox" onclick="this.classList.toggle('checked')"></div>
+                <div class="task-item completed">
+                    <div class="task-checkbox checked" onclick="this.classList.toggle('checked')"></div>
                     <div class="task-content">
                         <div class="task-title">Экспорт ResNet18 в ONNX</div>
                         <div class="task-description">Конвертация обученной модели (PyTorch) в формат .onnx для сервера.</div>
                         <div class="task-meta"><span class="task-tag tag-ml">ml</span></div>
                     </div>
                 </div>
-                <div class="task-item">
-                    <div class="task-checkbox" onclick="this.classList.toggle('checked')"></div>
+                <div class="task-item completed">
+                    <div class="task-checkbox checked" onclick="this.classList.toggle('checked')"></div>
                     <div class="task-content">
                         <div class="task-title">Написание API на Next.js</div>
                         <div class="task-description">Интеграция onnxruntime-node и Sharp.js для обработки фото.</div>
@@ -730,6 +747,134 @@ torch.onnx.export(
     opset_version=17,
     input_names=['input'], output_names=['output']
 )</pre>
+                </div>
+            </div>
+        </section>
+
+        <!-- СЕКЦИЯ: ТЕКУЩИЙ ИНТЕРФЕЙС -->
+        <section id="current-interface">
+            <div class="section-header">
+                <h2 class="section-title">Текущий интерфейс: "Зрение Терминатора"</h2>
+                <span class="status status-done">РЕАЛИЗОВАНО</span>
+            </div>
+
+            <div class="info-box">
+                <div class="info-box-title">Визуальный стиль интерфейса</div>
+                <div class="info-box-content">
+                    Интерфейс выполнен в стиле "Терминатор / Matrix Vision" - это не обычный лендинг, а рабочая inspection-панель с тактическим HUD-дизайном.
+                </div>
+            </div>
+
+            <div class="task-list">
+                <div class="task-item completed">
+                    <div class="task-checkbox checked" onclick="this.classList.toggle('checked')"></div>
+                    <div class="task-content">
+                        <div class="task-title">Современный tech-style лендинг</div>
+                        <div class="task-description">Темная cyber/matrix эстетика с неоново-зелеными акцентами и ощущением AI-scanner</div>
+                        <div class="task-meta"><span class="task-tag tag-dev">ui</span></div>
+                    </div>
+                </div>
+                <div class="task-item completed">
+                    <div class="task-checkbox checked" onclick="this.classList.toggle('checked')"></div>
+                    <div class="task-content">
+                        <div class="task-title">Многофункциональная зона загрузки</div>
+                        <div class="task-description">Поддержка drag & drop, выбора файла из галереи и загрузки фото с камеры</div>
+                        <div class="task-meta"><span class="task-tag tag-dev">frontend</span></div>
+                    </div>
+                </div>
+                <div class="task-item completed">
+                    <div class="task-checkbox checked" onclick="this.classList.toggle('checked')"></div>
+                    <div class="task-content">
+                        <div class="task-title">AR-режим сканирования</div>
+                        <div class="task-description">При анализе интерфейс переключается в AR-режим с угловыми маркерами и анимированной неоновой scanline</div>
+                        <div class="task-meta"><span class="task-tag tag-dev">анимация</span></div>
+                    </div>
+                </div>
+                <div class="task-item completed">
+                    <div class="task-checkbox checked" onclick="this.classList.toggle('checked')"></div>
+                    <div class="task-content">
+                        <div class="task-title">Визуальный результат анализа</div>
+                        <div class="task-description">Исходное фото, выделенная область протектора, depth overlay с цветовой индикацией износа</div>
+                        <div class="task-meta"><span class="task-tag tag-dev">ui</span></div>
+                    </div>
+                </div>
+                <div class="task-item completed">
+                    <div class="task-checkbox checked" onclick="this.classList.toggle('checked')"></div>
+                    <div class="task-content">
+                        <div class="task-title">Блок статистики</div>
+                        <div class="task-description">Класс износа, уверенность, средняя/мин/макс глубина протектора, время обработки</div>
+                        <div class="task-meta"><span class="task-tag tag-dev">frontend</span></div>
+                    </div>
+                </div>
+                <div class="task-item">
+                    <div class="task-checkbox" onclick="this.classList.toggle('checked')"></div>
+                    <div class="task-content">
+                        <div class="task-title">Панель ручной коррекции</div>
+                        <div class="task-description">UI для ручного выбора класса износа реализован, но серверное сохранение запланировано на следующий этап</div>
+                        <div class="task-meta"><span class="task-tag tag-dev">frontend</span></div>
+                    </div>
+                </div>
+            </div>
+
+            <h3 style="margin: 30px 0 16px; font-size: 1.1rem;">Цветовая логика оценки износа</h3>
+            <table class="kpi-table">
+                <thead>
+                    <tr>
+                        <th>Класс износа</th>
+                        <th>Глубина</th>
+                        <th>Цвет</th>
+                        <th>Визуальный индикатор</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Новая</td>
+                        <td>≥ 7.0 мм</td>
+                        <td class="kpi-highlight">#22c55e</td>
+                        <td>Зеленый оверлей</td>
+                    </tr>
+                    <tr>
+                        <td>Хорошая</td>
+                        <td>5.0-6.9 мм</td>
+                        <td class="kpi-highlight">#84cc16</td>
+                        <td>Лаймовый оверлей</td>
+                    </tr>
+                    <tr>
+                        <td>Средняя</td>
+                        <td>3.0-4.9 мм</td>
+                        <td class="kpi-highlight">#eab308</td>
+                        <td>Желтый оверлей</td>
+                    </tr>
+                    <tr>
+                        <td>Изношенная</td>
+                        <td>1.6-2.9 мм</td>
+                        <td class="kpi-highlight">#f97316</td>
+                        <td>Оранжевый оверлей</td>
+                    </tr>
+                    <tr>
+                        <td>Критическая</td>
+                        <td>< 1.6 мм</td>
+                        <td class="kpi-highlight">#ef4444</td>
+                        <td>Красный оверлей</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="code-block">
+                <div class="code-header">
+                    <span class="code-lang">Особенности интерфейса "Зрение Терминатора"</span>
+                    <button class="code-copy" onclick="copyCode(this)">Копировать</button>
+                </div>
+                <div class="code-content">
+<pre>// Ключевые визуальные элементы интерфейса
+- Черный / графитовый фон
+- Неоново-зеленые акценты (#00ff41)
+- Технологичные рамки и scan-corners
+- Анимированная scanline (эффект сканирования)
+- HUD-стиль (Heads-Up Display) как в тактических системах
+- Диагностическая консоль с данными в реальном времени
+- Результат представлен как машинная инспекция, а не обычная форма
+- Цветовая кодировка износа от зеленого (новая) до красного (критическая)</pre>
                 </div>
             </div>
         </section>

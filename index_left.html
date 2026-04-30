@@ -845,6 +845,15 @@
                 </div>
 
                 <div class="info-box">
+                    <div class="info-box-title">ТЕКУЩИЙ ИНТЕРФЕЙС: "ЗРЕНИЕ ТЕРМИНАТОРА"</div>
+                    <div class="info-box-content">
+                        Веб-интерфейс уже демонстрирует рабочий процесс AI-инспекции в стиле "Терминатор / Matrix Vision".
+                        Пользователь загружает фото шины и видит экран анализа с тактическими AR-элементами,
+                        неоново-зелеными акцентами и визуальной обратной связью в реальном времени.
+                    </div>
+                </div>
+
+                <div class="info-box">
                     <div class="info-box-title">ФОКУС: ТОЛЬКО КЛАССИФИКАЦИЯ ИЗНОСА</div>
                     <div class="info-box-content">
                         OCR (распознавание размера шины) перенесён на Этап 3. 
@@ -894,13 +903,23 @@
                             </div>
                         </div>
                     </div>
-                    <div class="task-item">
-                        <div class="task-checkbox" onclick="this.classList.toggle('checked')"></div>
+                    <div class="task-item completed">
+                        <div class="task-checkbox checked" onclick="this.classList.toggle('checked')"></div>
                         <div class="task-content">
                             <div class="task-title">Экспорт в ONNX + интеграция в Next.js</div>
                             <div class="task-description">Экспорт ResNet18 -> ONNX, инференс через onnxruntime-node</div>
                             <div class="task-meta">
                                 <span class="task-tag tag-code">бэкенд</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="task-item completed">
+                        <div class="task-checkbox checked" onclick="this.classList.toggle('checked')"></div>
+                        <div class="task-content">
+                            <div class="task-title">Реализация интерфейса "Зрение Терминатора"</div>
+                            <div class="task-description">Темный интерфейс с неоново-зелеными акцентами, AR-маркерами и анимированной scanline</div>
+                            <div class="task-meta">
+                                <span class="task-tag tag-design">ui</span>
                             </div>
                         </div>
                     </div>
@@ -1023,8 +1042,8 @@
                             </div>
                         </div>
                     </div>
-                    <div class="task-item">
-                        <div class="task-checkbox" onclick="this.classList.toggle('checked')"></div>
+                    <div class="task-item completed">
+                        <div class="task-checkbox checked" onclick="this.classList.toggle('checked')"></div>
                         <div class="task-content">
                             <div class="task-title">Собрать /beta страницу (фронтенд)</div>
                             <div class="task-description">Drag & drop загрузка, спиннер загрузки, отображение результата с уверенностью</div>
@@ -1282,6 +1301,129 @@ torch.onnx.export(
                         </div>
                     </div>
                 </div>
+            </section>
+
+            <!-- Section: Current Interface -->
+            <section id="current-interface">
+                <div class="section-header">
+                    <div class="section-icon">U</div>
+                    <h2 class="section-title">Текущий интерфейс: "Зрение Терминатора"</h2>
+                    <span class="section-badge status-done">ГОТОВО</span>
+                </div>
+
+                <div class="info-box">
+                    <div class="info-box-title">ВИЗУАЛЬНЫЙ СТИЛЬ ИНТЕРФЕЙСА</div>
+                    <div class="info-box-content">
+                        Интерфейс выполнен в стиле "Терминатор / Matrix Vision" - это не обычный лендинг, а рабочая inspection-панель с тактическим HUD-дизайном.
+                    </div>
+                </div>
+
+                <div class="task-list">
+                    <div class="task-item completed">
+                        <div class="task-checkbox checked" onclick="this.classList.toggle('checked')"></div>
+                        <div class="task-content">
+                            <div class="task-title">Главная страница в tech-style</div>
+                            <div class="task-description">Темная cyber/matrix эстетика с неоново-зелеными акцентами и ощущением AI-scanner</div>
+                            <div class="task-meta">
+                                <span class="task-tag tag-design">ui</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="task-item completed">
+                        <div class="task-checkbox checked" onclick="this.classList.toggle('checked')"></div>
+                        <div class="task-content">
+                            <div class="task-title">Многофункциональная зона загрузки</div>
+                            <div class="task-description">Поддержка drag & drop, выбора файла из галереи и загрузки фото с камеры</div>
+                            <div class="task-meta">
+                                <span class="task-tag tag-code">frontend</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="task-item completed">
+                        <div class="task-checkbox checked" onclick="this.classList.toggle('checked')"></div>
+                        <div class="task-content">
+                            <div class="task-title">AR-режим сканирования</div>
+                            <div class="task-description">При анализе интерфейс переключается в AR-режим с угловыми маркерами и анимированной неоновой scanline</div>
+                            <div class="task-meta">
+                                <span class="task-tag tag-design">анимация</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="task-item completed">
+                        <div class="task-checkbox checked" onclick="this.classList.toggle('checked')"></div>
+                        <div class="task-content">
+                            <div class="task-title">Визуальный результат анализа</div>
+                            <div class="task-description">Исходное фото, выделенная область протектора, depth overlay с цветовой индикацией износа</div>
+                            <div class="task-meta">
+                                <span class="task-tag tag-design">ui</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="task-item completed">
+                        <div class="task-checkbox checked" onclick="this.classList.toggle('checked')"></div>
+                        <div class="task-content">
+                            <div class="task-title">Блок статистики</div>
+                            <div class="task-description">Класс износа, уверенность, средняя/мин/макс глубина протектора, время обработки</div>
+                            <div class="task-meta">
+                                <span class="task-tag tag-code">frontend</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="task-item">
+                        <div class="task-checkbox" onclick="this.classList.toggle('checked')"></div>
+                        <div class="task-content">
+                            <div class="task-title">Панель ручной коррекции</div>
+                            <div class="task-description">UI для ручного выбора класса износа реализован, но серверное сохранение запланировано на следующий этап</div>
+                            <div class="task-meta">
+                                <span class="task-tag tag-code">frontend</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <h3>Цветовая логика оценки износа</h3>
+                <table class="kpi-table">
+                    <thead>
+                        <tr>
+                            <th>Класс износа</th>
+                            <th>Глубина</th>
+                            <th>Цвет</th>
+                            <th>Визуальный индикатор</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Новая</td>
+                            <td>≥ 7.0 мм</td>
+                            <td class="kpi-highlight">#22c55e</td>
+                            <td>Зеленый оверлей</td>
+                        </tr>
+                        <tr>
+                            <td>Хорошая</td>
+                            <td>5.0-6.9 мм</td>
+                            <td class="kpi-highlight">#84cc16</td>
+                            <td>Лаймовый оверлей</td>
+                        </tr>
+                        <tr>
+                            <td>Средняя</td>
+                            <td>3.0-4.9 мм</td>
+                            <td class="kpi-highlight">#eab308</td>
+                            <td>Желтый оверлей</td>
+                        </tr>
+                        <tr>
+                            <td>Изношенная</td>
+                            <td>1.6-2.9 мм</td>
+                            <td class="kpi-highlight">#f97316</td>
+                            <td>Оранжевый оверлей</td>
+                        </tr>
+                        <tr>
+                            <td>Критическая</td>
+                            <td>< 1.6 мм</td>
+                            <td class="kpi-highlight">#ef4444</td>
+                            <td>Красный оверлей</td>
+                        </tr>
+                    </tbody>
+                </table>
             </section>
 
             <!-- Section: Month 7-9 -->
